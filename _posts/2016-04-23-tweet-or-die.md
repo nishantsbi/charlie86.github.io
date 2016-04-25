@@ -5,7 +5,7 @@ subtitle: Monitoring Twitter for real-time sentiment analysis of the 2016 U.S. p
 bigimg: /img/candidates.jpg
 ---
 
-TL;DR: Watch Twitter react to the candidates in real-time with this [RShiny application](http://52.38.152.177:3838/Campaign/)
+TL;DR: Watch Twitter react to the candidates in real-time with this [RShiny application](http://52.38.152.177:3838/Campaign/).
 
 The immediacy and unfiltered nature of tweets can provide unique insights into real-time changes in public opinion.
 
