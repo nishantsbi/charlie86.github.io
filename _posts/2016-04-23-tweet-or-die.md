@@ -13,5 +13,7 @@ The immediacy and unfiltered nature of tweets can provide unique insights into r
 
 Since the tool is configured to capture streaming tweets, the analysis is subject to change depending on the batch of tweets collected. Nonetheless, the following findings seem to hold true the majority of the time:
 
-* People love to tweet about Donald Trump and (and mostly in a positive light)
+* People tweet about Donald Trump far more than any other candidate - and they love him
 * Tweets about Hillary Clinton and Ted Cruz are predominantly negative
+
+The importance of these findings remains to be seen. As Michelle Obama recently [pointed out](http://www.cnn.com/2016/04/23/politics/michelle-obama-commencement-speech/): "You can hashtag all over Instagram and Twitter, but those social media movements will disappear faster than a Snapchat if you're not also registered to vote,". 
