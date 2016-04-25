@@ -17,5 +17,4 @@ The analysis is subject to change depending on the batch of tweets collected. No
 * Tweets about Hillary Clinton and Ted Cruz are predominantly negative
 
 The electoral importance of these findings remains to be seen. As Michelle Obama recently [pointed out](http://www.cnn.com/2016/04/23/politics/michelle-obama-commencement-speech/):
-
 >"You can hashtag all over Instagram and Twitter, but those social media movements will disappear faster than a Snapchat if you're not also registered to vote,"
