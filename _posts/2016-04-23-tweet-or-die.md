@@ -1,7 +1,7 @@
 ---
 layout: post
 title: \#TweetOrDie
-subtitle: Live Twitter Sentiment Analysis of the 2016 U.S. Presidential Candidates
+subtitle: Using RShiny and streamR for real-time sentiment analysis of the 2016 Presidential Candidates
 bigimg: /img/candidates.jpg
 ---
 
