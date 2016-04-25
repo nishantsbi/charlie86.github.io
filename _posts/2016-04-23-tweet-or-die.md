@@ -6,6 +6,8 @@ bigimg: /img/candidates.jpg
 ---
 
 The immediacy and unfiltered nature of tweets can provide unique insights into real-time changes in public opinion.
+* 1
+* 2
 
 <iframe id="Campaign" src="http://52.38.152.177:3838/Campaign/" style="border: none; width: 1100px; height:770px; margin-left:-150px" frameborder="0"></iframe>
 
