@@ -24,9 +24,10 @@ description: A virtual proof that name is awesome!
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
-  Resources:
-    - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
-    - Shiny Server: "http://52.38.152.177:3838/"
+  Shiny Server: "http://52.38.152.177:3838/"
+  # Resources:
+  #   - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
+  #   - Shiny Server: "http://52.38.152.177:3838/"
   # Author's home: "http://deanattali.com"
 
 # Image to show in the navigation bar - image must be a square (width = height)
@@ -40,10 +41,10 @@ avatar: "/img/avatar-icon.png"
 author:
   name: Charlie
   email: wheresmychippy870@gmail.com
-  soundcloud: midnight-barber  # eg. daattali
-  github: charlie86    # eg. daattali
-  linkedin: yourlink  # eg. "pub/dean-attali/8/946/143"
-  stackoverflow: yourlink  # eg. "3943160/daattali"
+  soundcloud: midnight-barber
+  github: charlie86    
+  linkedin: yourlink  
+  stackoverflow: yourlink 
  
 # Select which links to show in the footer
 footer-links-active:
@@ -70,7 +71,7 @@ google_analytics: "UA-76817892-1"
 # --- Don't need to touch anything below here (but you can if you want) --- #
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Vancouver"
+timezone: "America/New_York"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
