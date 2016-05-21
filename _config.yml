@@ -24,7 +24,7 @@ description: A virtual proof that name is awesome!
 # List of links in the navigation bar
 navbar-links:
   About Me: "aboutme"
-  Shiny Server: "midnightbarber.net:3838/"
+  Shiny Server: midnightbarber.net:3838
   # Resources:
   #   - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
   #   - Shiny Server: "http://52.38.152.177:3838/"
