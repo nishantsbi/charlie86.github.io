@@ -5,11 +5,11 @@ subtitle: Monitoring real-time changes in public sentiment of the 2016 U.S. pres
 bigimg: /img/candidates.jpg
 ---
 
-TL;DR: Click [here](http://52.38.152.177:3838/Campaign/) to watch Twitter react to the candidates in real-time ([source code]()).
+TL;DR: Click [here](http://midnightbarber.net:3838/Campaign/) to watch Twitter react to the candidates in real-time ([source code]()).
 
 The 2016 U.S. presidential race has been crazy. Twitter, due to its immediacy and openness, can provide unique insights into real-time changes in public opinion.
 
-```<iframe id="Campaign" src="http://52.38.152.177:3838/Campaign/" style="border: none; width: 100%; height:400px; margin-left:-150px" frameborder="0"></iframe>```
+```<iframe id="Campaign" src="http://midnightbarber.net:3838/Campaign/" style="border: none; width: 100%; height:400px; margin-left:-150px" frameborder="0"></iframe>```
 
 While the analysis is subject to change depending on the batch of tweets collected, one predominant theme persists throughout: Twitter loves Donald Trump.
 
