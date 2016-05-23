@@ -9,8 +9,6 @@ TL;DR: Click [here](http://midnightbarber.net:3838/Campaign/) to watch Twitter r
 
 The 2016 U.S. presidential race has been crazy. Twitter, due to its immediacy and openness, can provide unique insights into real-time changes in public opinion.
 
-```<iframe id="Campaign" src="http://midnightbarber.net:3838/Campaign/" style="border: none; width: 100%; height:400px; margin-left:-150px" frameborder="0"></iframe>```
-
 While the analysis is subject to change depending on the batch of tweets collected, one predominant theme persists throughout: Twitter loves Donald Trump.
 
 In terms of both tweet volume and sentiment, Trump dominates all other candidates. Based on a random sample of a million tweets from __ to __, Trump tweets make up an average of __% of all tweets, __% of which are positive (for comparison, just __% of all other candidates' tweets are positive, on average).
