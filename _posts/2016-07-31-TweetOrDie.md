@@ -78,7 +78,7 @@ tweets for Trump.
 
 <!-- ![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-2-1.png)  -->
 
-{% include twitt_time.html %}
+<div>{% include twitt_time.html %}</div>
 
 Using
 almost identical code, I further broke it down to the county level.
