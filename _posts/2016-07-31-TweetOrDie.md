@@ -76,7 +76,11 @@ tweets for Trump.
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-2-1.png) Using
+<!-- ![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-2-1.png)  -->
+
+{% include twitt_time.html %}
+
+Using
 almost identical code, I further broke it down to the county level.
 However, because I had less than a week of data, and such a small
 portion of twitts were geotagged, the map is fairly empty.
