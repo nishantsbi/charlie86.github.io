@@ -89,7 +89,7 @@ It would be a shame to throw away all of this data without digging a little deep
 The Spotify Track API itself has pretty good documentation, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead". Note that you can also find any single uri by right clicking on the track, album, or artist directly within the Spotify app, but that would be a huge pain in the ass for this use case.
 
 First, I created a function to search for artist names.
-```
+~~~
 get_artists <- function(artist_name) {
     
     # Search Spotify API for artist name
@@ -115,7 +115,7 @@ get_artists('radiohead') %>%
 # Filter out the tribute band
 artist_info <- get_artists('radiohead') %>% 
     filter(artist_name == 'Radiohead')
-```
+~~~
 Next, I used the `artist uri` obtained above to search for all of Radiohead's albums.
 {% highlight javascript %}
 get_albums <- function(artist_uri) {
