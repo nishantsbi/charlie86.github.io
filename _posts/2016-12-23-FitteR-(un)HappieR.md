@@ -18,11 +18,11 @@ head(lyrics_df)
 
 ## Quantifying Sentiment
 With valence alone, calculating the saddest song is pretty straightforward.
-{% highlight javascript %}
+```r
 sound_df %>% 
     filter(valence == min(valence)) %>% 
     select(track_name, valence)
-{% endhighlight %}
+```
 Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced project by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
@@ -61,7 +61,7 @@ So by the percentage of total words that were sad, "Give Up The Ghost" wins, wit
 In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/) of...Radiohead! As they describe it - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
 Recall that track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 0 and 1, so that the saddest song had a score of 0 and the least sad song scored 1.
-{% highlight r %}
+```r
 library(scales)
 track_df <- sound_df %>% 
     mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% 
@@ -70,13 +70,13 @@ track_df <- sound_df %>%
            pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
            lyrical_density = word_count / duration_ms * 1000,
            combined_sadness = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2))
-{% endhighlight %}
+```
 Drum Roll...
-{% highlight javascript %}
+```r
 track_df %>% 
     arrange(combined_sadness) %>% 
     head
-{% endhighlight %}
+```
 We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date.
 
 ## If you think this is over, then you're wrong
@@ -91,7 +91,7 @@ The Spotify Track API itself has pretty good documentation, but it's still a pre
 
 First, I created a function to search for artist names.
 
-~~~
+```r
 get_artists <- function(artist_name) {
     
     # Search Spotify API for artist name
@@ -117,10 +117,10 @@ get_artists('radiohead') %>%
 # Filter out the tribute band
 artist_info <- get_artists('radiohead') %>% 
     filter(artist_name == 'Radiohead')
-~~~
+```
 
 Next, I used the `artist uri` obtained above to search for all of Radiohead's albums.
-{% highlight javascript %}
+```r
 get_albums <- function(artist_uri) {
     albums <- GET(paste0('https://api.spotify.com/v1/artists/', artist_uri,'/albums')) %>% content
     
@@ -153,9 +153,9 @@ album_info %>%
 # Some remixes and EPs snuck through
 non_studio_albums <- c('TKOL RMX 1234567', 'In Rainbows Disk 2', 'Com Lag: 2+2=5', 'I Might Be Wrong')
 album_info <- album_info %>% filter(!album_name %in% non_studio_albums)
-{% endhighlight %}
+```
 Armed with all of the `album uris`, I pulled the track info for each album.
-{% highlight javascript %}
+```r
 get_tracks <- function(artist_info, album_info) {
     
     # You'll have to set up a dev account with Spotify here:
@@ -201,4 +201,4 @@ get_tracks <- function(artist_info, album_info) {
 track_info <- get_tracks(artist_info, album_info)
 track_info %>% 
     datatable(rownames=F,escape=F)
-{% endhighlight %}
+```
