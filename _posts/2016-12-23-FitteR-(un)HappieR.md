@@ -29,7 +29,7 @@ While valence serves as an out-of-the box measure of musical sentiment, the emot
 
 For my specific metric, I chose the number of "sad" words as a share of all words in a song. While the case could be made for only including ___unique___ words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
-{% highlight javascript %}
+```r
 library(tidytext)
 
 nrc <- sentiments %>% 
@@ -53,7 +53,7 @@ lyrics_sent$track_name[lyrics_sent$track_name == 'Dollars and Cents'] <- 'Dollar
 lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
 
 arrange(lyrics_sent, -pct_sad)
-{% endhighlight %}
+```
 
 So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To get to the one true most depressing song, I had to find some way to combine the two metrics using some weighting metric. 
 
@@ -81,6 +81,7 @@ We have a winner! "True Love Waits" is officially the single most depressing Rad
 
 ## If you think this is over, then you're wrong
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
+
 ### Has Radiohead gotten sadder over time?
 
 ### What is the prototypical Radiohead song?
