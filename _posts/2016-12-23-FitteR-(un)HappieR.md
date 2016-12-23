@@ -5,3 +5,6 @@ subtitle: Finding the most depressing Radiohead song with R
 bigimg: /img/ifwesmilecanwegohd.jpg
 ---
 Radiohead has been my favorite band for several years, so I am used to people politely suggesting that I play something "less depressing". Much of Radiohead's music is undeniably sad, and this post catalogs my journey to quantify that sadness, including a data-driven determination of their single most depressing song.
+
+## Getting Data
+Spotify recently released their Track API, which provides detailed audio statistics for each song in their library. One of these metrics, "valence", measures a song's positivity. From the offical API documentation:
