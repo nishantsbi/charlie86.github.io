@@ -2,7 +2,7 @@
 layout: post
 title: fitteR (un)happieR
 subtitle: Finding the most depressing Radiohead song with R
-bigimg: /img/ifwesmilecanwego.jpg
+bigimg: /img/ifwesmilecanwegohd.jpg
 ---
 Radiohead has been my favorite band for several years, so I am used to people politely suggesting that I play something "less depressing". Much of Radiohead's music is undeniably sad, and this post catalogs my journey to quantify that sadness, including a data-driven determination of their single most depressing song.
 
@@ -10,7 +10,7 @@ Radiohead has been my favorite band for several years, so I am used to people po
 Spotify recently released their [Web API](https://developer.spotify.com/web-api/){:target="_blank"}, which provides detailed audio statistics for each song in their library. One of these metrics, "valence", measures a song's positivity. From the offical API documentation:
 > A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).
 
-So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/) to pull track-level data. In my analysis I used a combination of both valence and lyrical sentiment, and the code for retrieiving both data sets is included at the end of the post. I used the resulting dataframes, `sound_df` and `lyrics_df`, for all of the following analysis.
+So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/){:target="_blank"} to pull track-level data. In my analysis I used a combination of both valence and lyrical sentiment, and the code for retrieiving both data sets is included at the end of the post. I used the resulting dataframes, `sound_df` and `lyrics_df`, for all of the following analysis.
 
 ```r
 head(sound_df)
@@ -28,7 +28,7 @@ sound_df %>%
 
 Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
 
-While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm) by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
+While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
 For my specific metric, I chose the number of "sad" words as a share of all words in a song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
@@ -61,7 +61,7 @@ arrange(lyrics_sent, -pct_sad)
 So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To get to the one true most depressing song, I had to find some way to combine the two metrics using some weighting metric. 
 
 ## Lyrical Density
-In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/) of...Radiohead! As they describe it - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
+In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! As they describe it - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
 Recall that track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 0 and 1, so that the saddest song had a score of 0 and the least sad song scored 1.
 
