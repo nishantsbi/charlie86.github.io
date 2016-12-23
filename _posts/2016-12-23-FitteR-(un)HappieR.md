@@ -54,3 +54,10 @@ lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] 
 
 arrange(lyrics_sent, -pct_sad)
 {% endhighlight %}
+
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To get to the one true most depressing song, I had to find some way to combine the two metrics using some weighting metric. 
+
+## Lyrical Density
+In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/) of...Radiohead! As they describe it - "the number of lyrics per song over the track length". You can interpret this as how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
+
+Recall that track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness.
