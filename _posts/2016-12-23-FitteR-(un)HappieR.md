@@ -14,7 +14,6 @@ So valence provides a measure of how sad a song *sounds* from a musical perspect
 
 ## Quantifying Sentiment
 With valence alone, calculating the saddest song is pretty straightforward.
-
 ```javascript
 head(sound_df)
 
@@ -22,3 +21,36 @@ sound_df %>%
     filter(valence == min(valence)) %>% 
     select(track_name, valence)
 ```
+Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
+
+While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced project by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
+
+For my specific metric, I chose the number of "sad" words as a share of all words in a song. While the case could be made for only including ___unique___ words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
+
+{% highlight javascript %}
+library(tidytext)
+
+head(lyrics_df)
+
+nrc <- sentiments %>% 
+    filter(lexicon == 'nrc',
+           sentiment == 'sadness') %>% 
+    select(word) %>% 
+    mutate(sad = T)
+
+lyrics_sent <- lyrics_df %>% 
+    unnest_tokens(word, lyrics) %>%
+    left_join(nrc, by = 'word') %>%
+    group_by(track_name) %>% 
+    summarise(word_count = n(),
+              pct_sad = sum(sad, na.rm = T) / word_count) %>% 
+    ungroup
+
+lyrics_sent$track_name[lyrics_sent$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
+lyrics_sent$track_name[lyrics_sent$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
+
+arrange(lyrics_sent, -pct_sad)
+{% endhighlight %}
