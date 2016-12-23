@@ -1,3 +1,10 @@
+---
+layout: post
+title: \#TweetOrDie
+subtitle: Measuring geographic candidate sentiment with Twitter
+bigimg: /img/candidates.jpg
+---
+
 For my submission to Ari Lamstein's R Shapefile Contest, I looked at
 Twitter's sentiment towards Hillary Clinton and Donald Trump. Using
 Twitter's geotagging feature, I mapped current sentiment expressed in
@@ -139,11 +146,6 @@ primetime DNC events! Specifically, Michelle Obama's midnight speech on
 Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's
 speech at midnight on Wednesday, and Hillary's formal acceptance speech
 midnight Thursday.
-
-To fully analyze the effect of the DNC will require more data. After a
-few more weeks of collecting twitts, I will revisit this analysis and
-compare the past four nights to the candidates' typical sentiment
-fluctuation.
 
 Below is the script I use to pull in twitts and write them to RDS
 (apologies for the lack of comments).
