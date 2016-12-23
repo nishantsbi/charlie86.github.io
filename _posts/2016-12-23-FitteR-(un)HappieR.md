@@ -61,3 +61,20 @@ So by the percentage of total words that were sad, "Give Up The Ghost" wins, wit
 In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/) of...Radiohead! As they describe it - "the number of lyrics per song over the track length". You can interpret this as how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
 Recall that track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness.
+{% highlight javascript %}
+library(scales)
+track_df <- sound_df %>% 
+    mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% 
+    left_join(lyrics_sent %>% mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% select(-track_name), by = 'track_name_join') %>% 
+    mutate(word_count = ifelse(is.na(word_count), 0, word_count),
+           pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
+           lyrical_density = word_count / duration_ms * 1000,
+           combined_sadness = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2))
+{% endhighlight %}
+Drum Roll...
+{% highlight javascript %}
+track_df %>% 
+    arrange(combined_sadness) %>% 
+    head
+{% endhighlight %}
+Awesome! Looks like "True Love Waits" is officially the single most depressing Radiohead song to-date.
