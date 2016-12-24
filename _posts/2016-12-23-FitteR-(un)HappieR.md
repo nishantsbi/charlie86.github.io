@@ -26,7 +26,7 @@ sound_df %>%
     filter(valence == min(valence)) %>% 
     select(track_name, valence)
 ```
-<div>{% include valence_chart.html %}</div>
+<div><div>{% include valence_chart.html %}</div></div>
 
 Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
 
