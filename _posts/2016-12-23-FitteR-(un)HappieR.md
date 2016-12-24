@@ -137,9 +137,9 @@ track_df %>%
     hc_add_theme(hc_theme_smpl())
 ```
 
+<iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
 We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the combined_sadness of each song with the `highcharter` package.
 
-<iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
 ## If you think this is over, then you're wrong
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
 
