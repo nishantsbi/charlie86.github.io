@@ -19,16 +19,36 @@ head(lyrics_df)
 ```
 
 ## Quantifying Sentiment
-With valence alone, calculating the saddest song is pretty straightforward.
+Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins. I created the chart below using the `highcharter` package.
 
 ```r
 sound_df %>% 
-    filter(valence == min(valence)) %>% 
-    select(track_name, valence)
+	rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 10, 'px">',
+                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                            '<b>Album:</b> ', album_name,
+                            '<br><b>Track:</b> ', track_name,
+                            '<br><b>Valence:</b> ', valence),
+                            '</a>') %>% 
+    ungroup %>% 
+    select(track_name, tooltip, valence) %>% 
+    arrange(-valence) %>% 
+    hchart(x = track_name, y = valence, type = 'bar') %>%
+    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+    hc_yAxis(plotLines = list(list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
+                               color = 'black',
+                               width = 2,
+                               value = mean(sound_df$valence),
+                               zIndex = 4)
+                          )
+         ) %>% 
+    hc_xAxis(title = list(enabled = F)) %>% 
+    hc_title(text = 'Musical Sentiment of Radiohead Songs') %>% 
+    hc_subtitle(text = 'Track valence as determined by Spotify') %>% 
+    hc_add_theme(hc_theme_smpl())
 ```
 <iframe src="/htmlwidgets/fitterhappier/valence_chart.html"></iframe>
-<!-- <iframe src="/htmlwidgets/fitterhappier/valence_chart.html" height="650" width="100%" overflow-x= "auto" border= "none" background= "transparent" overflow="hidden"></iframe> -->
-Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
+Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
