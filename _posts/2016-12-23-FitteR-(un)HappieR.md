@@ -19,35 +19,27 @@ head(lyrics_df)
 ```
 
 ## Quantifying Sentiment
-Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins. I created the chart below using the `highcharter` package.
+Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
 
 ```r
 sound_df %>% 
-	rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 10, 'px">',
-                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
-                            '<b>Album:</b> ', album_name,
-                            '<br><b>Track:</b> ', track_name,
-                            '<br><b>Valence:</b> ', valence),
-                            '</a>') %>% 
-    ungroup %>% 
-    select(track_name, tooltip, valence) %>% 
-    arrange(-valence) %>% 
-    hchart(x = track_name, y = valence, type = 'bar') %>%
-    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-    hc_yAxis(plotLines = list(list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
-                               color = 'black',
-                               width = 2,
-                               value = mean(sound_df$valence),
-                               zIndex = 4)
-                          )
-         ) %>% 
-    hc_xAxis(title = list(enabled = F)) %>% 
-    hc_title(text = 'Musical Sentiment of Radiohead Songs') %>% 
-    hc_subtitle(text = 'Track valence as determined by Spotify') %>% 
-    hc_add_theme(hc_theme_smpl())
+    arrange(valence) %>% 
+    slice(1:10) %>% 
+    select(track_name, valence)
+
+                                                        track_name valence
+1                                              We Suck Young Blood  0.0378
+2                                                  True Love Waits  0.0378
+3                                                      The Tourist  0.0400
+4                                        Motion Picture Soundtrack  0.0425
+5                                                 Sail To The Moon  0.0458
+6                                                        Videotape  0.0468
+7                                             Life In a Glasshouse  0.0516
+8  Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief  0.0517
+9                                                      The Numbers  0.0545
+10                                   Everything In Its Right Place  0.0585
 ```
-<iframe src="/htmlwidgets/fitterhappier/valence_chart.html"></iframe>
+
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
@@ -89,12 +81,12 @@ arrange(lyrics_sent, -pct_sad)
 # ... with 198 more rows
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To get to the one true most depressing song, I had to find some way to combine the two metrics using some weighting metric. 
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To combine musical and lyrical sentiment, I turned to a previous R Blogger's analysis.
 
 ## Lyrical Density
-In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! As they describe it - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
+In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! Lyrical density is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Recall that track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 0 and 1, so that the saddest song had a score of 0 and the least sad song scored 1.
+Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 0 and 1, so that the saddest song had a score of 0 and the least sad song scored 1.
 
 ```r
 library(scales)
@@ -112,19 +104,42 @@ track_df <- sound_df %>%
     mutate(word_count = ifelse(is.na(word_count), 0, word_count),
            pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
            lyrical_density = word_count / duration_ms * 1000,
-           combined_sadness = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2))
+           combined_sadness = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2)) 
 ```
 
 Drum Roll...
 
 ```r
 track_df %>% 
-    arrange(combined_sadness) %>% 
-    head
+    rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 10, 'px">',
+                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                            '<b>Album:</b> ', album_name,
+                            '<br><b>Track:</b> ', track_name,
+                            '<br><b>Valence:</b> ', sentiment_score),
+                            '</a>') %>% 
+    ungroup %>% 
+    select(track_name, tooltip, sentiment_score) %>% 
+    arrange(-sentiment_score) %>% 
+    hchart(x = track_name, y = sentiment_score, type = 'bar') %>%
+    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+    hc_yAxis(plotLines = list(list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
+                               color = 'black',
+                               width = 2,
+                               value = mean(track_df$sentiment_score, na.rm = T),
+                               zIndex = 4)
+                          ),
+             max = 100
+         ) %>% 
+    hc_xAxis(title = list(enabled = F)) %>% 
+    hc_title(text = 'Sentiment of Radiohead Songs') %>% 
+    hc_subtitle(text = 'Average of track valence and lyrical sentiment, weighted by lyrical density') %>% 
+    hc_add_theme(hc_theme_smpl())
 ```
 
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date.
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the combined_sadness of each song with the `highcharter` package.
 
+<iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
 ## If you think this is over, then you're wrong
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
 
