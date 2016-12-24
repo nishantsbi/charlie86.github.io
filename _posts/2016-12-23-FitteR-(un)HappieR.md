@@ -48,7 +48,7 @@ sound_df %>%
     hc_add_theme(hc_theme_smpl())
 ```
 <iframe src="/htmlwidgets/fitterhappier/valence_chart.html"></iframe>
-Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
+Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
@@ -71,13 +71,22 @@ lyrics_sent <- lyrics_df %>%
               pct_sad = sum(sad, na.rm = T) / word_count) %>% 
     ungroup
 
-lyrics_sent$track_name[lyrics_sent$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
-lyrics_sent$track_name[lyrics_sent$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
-lyrics_sent$track_name[lyrics_sent$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
-lyrics_sent$track_name[lyrics_sent$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
-lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
-
 arrange(lyrics_sent, -pct_sad)
+
+# A tibble: 208 x 3
+                                 track_name word_count    pct_sad
+                                      <chr>      <int>      <dbl>
+1                         Give Up The Ghost        190 0.17368421
+2                           True Love Waits         62 0.16129032
+3  Packt Like Sardines in a Crushed Tin Box        172 0.12790698
+4                              High and Dry        200 0.10000000
+5                                       Fog         73 0.09589041
+6                    How I Made My Millions         42 0.09523810
+7                   Exit Music (For a Film)        106 0.09433962
+8                                 The Thief        200 0.09000000
+9                                Backdrifts        146 0.08904110
+10                                 Let Down        161 0.07453416
+# ... with 198 more rows
 ```
 
 So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To get to the one true most depressing song, I had to find some way to combine the two metrics using some weighting metric. 
@@ -89,6 +98,14 @@ Recall that track duration was included in the Spotify dataset, so after a simpl
 
 ```r
 library(scales)
+
+# Before, joining, I reconciled the differences between a few of the track names
+lyrics_sent$track_name[lyrics_sent$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
+lyrics_sent$track_name[lyrics_sent$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
+lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
+
 track_df <- sound_df %>% 
     mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% 
     left_join(lyrics_sent %>% mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% select(-track_name), by = 'track_name_join') %>% 
