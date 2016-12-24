@@ -548,7 +548,7 @@ table tr td :last-child {
   margin-bottom: 0;
 }
 
-iframe {
+article iframe {
   overflow-x: auto;
   border: none;
   background: transparent;
