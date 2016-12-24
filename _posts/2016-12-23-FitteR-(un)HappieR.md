@@ -26,7 +26,7 @@ sound_df %>%
     filter(valence == min(valence)) %>% 
     select(track_name, valence)
 ```
-<iframe src="viz/radiohead/valence_chart.html" width = "1000" height = "600"></iframe>
+<iframe src="/viz/radiohead/valence_chart.html" width = "1000" height = "600"></iframe>
 Wow, I guess not it's not so simple! "True Love Waits" and "We Suck Young Blood" tie here, further illustrating the need for bringing in additional metrics. 
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
