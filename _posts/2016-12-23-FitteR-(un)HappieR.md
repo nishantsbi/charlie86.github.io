@@ -104,7 +104,7 @@ track_df <- sound_df %>%
     mutate(word_count = ifelse(is.na(word_count), 0, word_count),
            pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
            lyrical_density = word_count / duration_ms * 1000,
-           combined_sadness = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2)) 
+           sentiment_score = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2)) 
 ```
 
 Drum Roll...
@@ -138,13 +138,13 @@ track_df %>%
 ```
 
 <iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the combined_sadness of each song with the `highcharter` package.
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
 
 ## If you think this is over, then you're wrong
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
 
 ### Has Radiohead gotten sadder over time?
-
+<iframe src="/htmlwidgets/fitterhappier/album_chart.html"></iframe>
 ### What is the prototypical Radiohead song?
 
 ## Data Appendix
