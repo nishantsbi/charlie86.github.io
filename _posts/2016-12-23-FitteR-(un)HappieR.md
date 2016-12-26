@@ -144,7 +144,8 @@ We have a winner! "True Love Waits" is officially the single most depressing Rad
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
 
 ### Has Radiohead gotten sadder over time?
-<iframe src="/htmlwidgets/fitterhappier/album_chart.html"></iframe>
+<iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
+
 ### What is the prototypical Radiohead song?
 
 ## Data Appendix
