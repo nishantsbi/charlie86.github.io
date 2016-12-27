@@ -9,6 +9,14 @@ layout: base
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
 	      {{ content }}
+        <script src="https://rawgit.com/nomensa/jquery.hide-show/master/jquery.hideShow.min.js"></script>
+        <script>
+          $(".highlight").hideShow({
+            hideText: "Hide <i class=\"fa fa-code\"></i>",
+            showText: "Show <i class=\"fa fa-code\"></i>",
+            state: "hidden"
+          });
+        </script>
 	    </article>
 	  	  
       <ul class="pager blog-pager">
