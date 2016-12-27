@@ -394,6 +394,7 @@ get_tracks <- function(artist_info, album_info) {
 }
 
 track_info <- get_tracks(artist_info, album_info)
+```
 
 ### Genius Lyrics API
 
