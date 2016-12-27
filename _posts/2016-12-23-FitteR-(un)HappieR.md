@@ -399,6 +399,7 @@ track_info <- get_tracks(artist_info, album_info)
 ### Genius Lyrics API
 
 I used the Genius Lyrics API, and while this data proved to be slightly easier to pull, it is still a multi-step process. Similar to with Spotify, you first need to use the `search` call to get the `artist_uri`. 
+
 ```r
 library(rvest)
 
@@ -426,6 +427,7 @@ genius_get_artists <- function(artist_name, n_results = 10) {
 genius_artists <- genius_get_artists('radiohead')
 
 ```
+
 Next, I looped through the contents of the `songs` endpoint (the limit is 50 per page), pulling down each result (a list containing the url of the tracks' lyrics) until the `next_page` parameter was null.
 
 ```r
