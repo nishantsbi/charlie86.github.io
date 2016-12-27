@@ -397,7 +397,6 @@ track_info <- get_tracks(artist_info, album_info)
 
 ### Genius Lyrics API
 
-```
 I used the Genius Lyrics API, and while this data proved to be slightly easier to pull, it is still a multi-step process. Similar to with Spotify, you first need to use the `search` call to get the `artist_uri`. 
 ```r
 library(rvest)
