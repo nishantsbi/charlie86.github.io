@@ -110,46 +110,176 @@ track_df <- sound_df %>%
 Drum Roll...
 
 ```r
+track_df %>%
+	arrange(sentiment_score) %>%
+	head(10)
+
+                                                        track_name sentiment_score
+1                                                  True Love Waits          1.0000
+2                                                Give Up The Ghost          3.7846
+3                                        Motion Picture Soundtrack         13.2105
+4                                              We Suck Young Blood         16.0205
+5                                                     Pyramid Song         16.8839
+6                                                        Videotape         17.4024
+7  Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief         17.8040
+8                                                  Dollars & Cents         18.0803
+9                                                         Let Down         18.2258
+10                                            Life In a Glasshouse         18.7413
+```
+
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
+
+
+```r
 track_df %>% 
     rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 10, 'px">',
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
                             '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                             '<b>Album:</b> ', album_name,
                             '<br><b>Track:</b> ', track_name,
                             '<br><b>Valence:</b> ', sentiment_score),
-                            '</a>') %>% 
+           '</a>') %>% 
     ungroup %>% 
     select(track_name, tooltip, sentiment_score) %>% 
     arrange(-sentiment_score) %>% 
     hchart(x = track_name, y = sentiment_score, type = 'bar') %>%
     hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
     hc_yAxis(plotLines = list(list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
-                               color = 'black',
-                               width = 2,
-                               value = mean(track_df$sentiment_score, na.rm = T),
-                               zIndex = 4)
-                          ),
-             max = 100
-         ) %>% 
+                                   color = 'black',
+                                   width = 2,
+                                   value = mean(track_df$sentiment_score, na.rm = T),
+                                   zIndex = 4)
+    ),
+    max = 100
+    ) %>% 
     hc_xAxis(title = list(enabled = F)) %>% 
+    hc_yAxis(title = list(text = 'Sentiment Score')) %>% 
     hc_title(text = 'Sentiment of Radiohead Songs') %>% 
     hc_subtitle(text = 'Average of track valence and lyrical sentiment, weighted by lyrical density') %>% 
     hc_add_theme(hc_theme_smpl())
 ```
-
 <iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
 
 ## If you think this is over, then you're wrong
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
 
-### Has Radiohead gotten sadder over time?
+### Has Radiohead become sadder over time?
+```r
+library(RColorBrewer)
+
+plot_df <- track_df %>% 
+    rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
+                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                            '<b>Album:</b> ', album_name,
+                            '<br><b>Track:</b> ', track_name)) %>% 
+    ungroup
+avg_line <- plot_df %>% 
+    group_by(album_release_year, album_name, album_img) %>% 
+    summarise(avg = mean(sentiment_score)) %>% 
+    ungroup %>% 
+    transmute(x = as.numeric(as.factor(album_release_year)), y = avg,
+              tooltip = paste0('<a style = "margin-right:', nchar(album_name) * 10, 'px">',
+                               '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                               '<b>Album:</b> ', album_name,
+                               '<br><b>Average Track Sentiment Score:</b> ', round(avg, 4),
+                               '</a>'))
+plot_track_df <- plot_df %>% 
+    mutate(tooltip = paste0(tooltip, '<br><b>Sentiment Score:</b> ', sentiment_score,
+                            '</a>'),
+           album_number = as.numeric(as.factor(album_release_year))) %>% 
+    ungroup
+
+hc <- hchart(plot_track_df, x = as.numeric(as.factor(album_release_year)), y = sentiment_score, group = album_name, type = 'scatter') %>% 
+    hc_add_series_df(data = avg_line, type = 'line') %>%
+    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+    hc_colors(c(brewer.pal(n_distinct(track_df$album_name), 'Set3'), 'black')) %>% 
+    hc_xAxis(title = list(enabled = F)) %>% 
+    hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
+    hc_title(text = 'Data Driven Depression') %>% 
+    hc_subtitle(text = 'Radiohead sentiment by album') %>% 
+    hc_add_theme(hc_theme_smpl())
+hc$x$hc_opts$series[[10]]$name <- 'Album Averages'
+```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
+
+### How does sentiment evolve within Radiohead's albums?
+
+<!-- ```r
+library(purrr)
+library(htmltools)
+track_num_album <- track_df %>% 
+    rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
+                        '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                        '<b>Album:</b> ', album_name,
+                        '<br><b>Track:</b> ', track_name)) %>% 
+    ungroup %>% 
+    group_by(album_name) %>% 
+    mutate(tooltip = paste0(tooltip,
+                        '<br><b>Album Position:</b> ', track_number, '/', max(track_number),
+                        '<br><b>Sentiment Score:</b> ', sentiment_score,
+                        '</a>'
+                            )) %>% 
+    ungroup
+
+map(track_num_album %>% arrange(album_release_date) %>% select(album_name) %>% unique %>% .[[1]], function(x) {
+    hchart(track_num_album %>% filter(album_name == x), x = track_number, y = sentiment_score, type = 'line') %>% 
+        hc_title(text = x) %>% 
+        hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+        hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
+        hc_xAxis(title = list(text = 'Track Number'),
+                 allowDecimals = F) %>% 
+        hc_add_theme(hc_theme_smpl())
+}) %>% hw_grid(rowheight = 200, ncol = 3) %>% browsable
+```
+<iframe src="/htmlwidgets/fitterhappier/track_num_album"></iframe> -->
+
+```r
+track_order <- track_df %>% 
+    group_by(album_name, album_img) %>% 
+    mutate(scaled_track_number = rescale(track_number / max(track_number), c(0, 1))) %>% 
+    ungroup %>% 
+    rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
+                        '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                        '<b>Album:</b> ', album_name,
+                        '<br><b>Track:</b> ', track_name)) %>% 
+    ungroup %>% 
+    group_by(album_name) %>% 
+    mutate(tooltip = paste0(tooltip,
+                        '<br><b>Album Position:</b> ', track_number, '/', max(track_number),
+                        '<br><b>Sentiment Score:</b> ', sentiment_score,
+                        '</a>'
+                            )) %>% 
+    ungroup %>% 
+    arrange(scaled_track_number) %>% 
+    mutate(smooth_track_order = loess(sentiment_score ~ scaled_track_number, data = .) %>% .$fitted)
+
+track_num_combined <- highchart() %>% 
+    hc_add_series_df(data = track_order %>% arrange(album_release_year) %>% select(x = scaled_track_number, y = sentiment_score, group = album_name, tooltip = tooltip), group = group, type = 'scatter') %>% 
+    hc_add_series_df(data = track_order %>% select(x = scaled_track_number, y = smooth_track_order) %>% mutate(tooltip = 'Smooth Fitted Line'), type = 'line') %>% 
+    hc_colors(c(brewer.pal(n_distinct(track_df$album_name), 'Set3'), 'black')) %>% 
+    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+    hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
+    hc_xAxis(labels = list(formatter = JS(paste0("function() {return this.value * 100 + '%';}"))),
+             title = list(text = 'Album Position Percentile')) %>% 
+    hc_title(text = 'Everything in its Right Place') %>% 
+    hc_subtitle(text = 'Track Sentiment by Album Position') %>% 
+    hc_add_theme(hc_theme_smpl())
+track_num_combined$x$hc_opts$plotOptions$series$marker$symbol <- 'circle'
+track_num_combined$x$hc_opts$series[[10]]$name <- 'Smooth Fitted Line'
+track_num_combined
+```
+<iframe src="/htmlwidgets/fitterhappier/track_num_combined"></iframe>
 
 ### What is the prototypical Radiohead song?
 
 ## Data Appendix
-The Spotify Track API itself has pretty good documentation, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead". Note that you can also find any single uri by right clicking on the track, album, or artist directly within the Spotify app, but that would be a huge pain in the ass for this use case.
+
+### Spotify Web API
+
+The Spotify Web API itself has pretty good documentation, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead". Note that you can also find any single uri by right clicking on the track, album, or artist directly within the Spotify app, but that would be a huge pain in the ass for this use case.
 
 First, I created a function to search for artist names.
 
@@ -264,6 +394,77 @@ get_tracks <- function(artist_info, album_info) {
 }
 
 track_info <- get_tracks(artist_info, album_info)
-track_info %>% 
-    datatable(rownames=F,escape=F)
+
+### Genius Lyrics API
+
+```
+I used the Genius Lyrics API, and while this data proved to be slightly easier to pull, it is still a multi-step process. Similar to with Spotify, you first need to use the `search` call to get the `artist_uri`. 
+```r
+library(rvest)
+
+artist_name <- 'radiohead'
+n_results <- 10
+token <- '0WblX68Oq3W8IqgBwBDL8MqY0cSPy5hOsD7L3aLQLd6rXxQYdh0Fs_ZbhtgeGn9O'
+
+genius_get_artists <- function(artist_name, n_results = 10) {
+    baseURL <- 'https://api.genius.com/search?q=' 
+    requestURL <- paste0(baseURL, gsub(' ', '%20', artist_name),
+                         '&per_page=', n_results,
+                         '&access_token=', token)
+    
+    res <- GET(requestURL) %>% content %>% .$response %>% .$hits
+    
+    map_df(1:length(res), function(x) {
+        tmp <- res[[x]]$result$primary_artist
+        list(
+            artist_id = tmp$id,
+            artist_name = tmp$name
+        )
+    }) %>% unique
+}
+
+genius_artists <- genius_get_artists('radiohead')
+
+```
+Next, I looped through the contents of the `songs` endpoint (the limit is 50 per page), pulling down each result (a list containing the url of the tracks' lyrics) until the `next_page` parameter was null.
+
+```r
+baseURL <- 'https://api.genius.com/artists/' 
+requestURL <- paste0(baseURL, genius_artists$artist_id[1], '/songs')
+
+track_lyric_urls <- list()
+i <- 1
+while (i > 0) {
+    tmp <- GET(requestURL, query = list(access_token = token, per_page = 50, page = i)) %>% content %>% .$response
+    track_lyric_urls <- c(track_lyric_urls, tmp$songs)
+    if (!is.null(tmp$next_page)) {
+        i <- tmp$next_page
+    } else {
+        break
+    }
+}
+```
+From here, I used `rvest` to scrape the "lyrics" elements from the urls provided above.
+
+```r
+lyric_scraper <- function(url) {
+    read_html(url) %>% 
+        html_node('lyrics') %>% 
+        html_text
+}
+
+lyrics_df <- map_df(1:length(track_lyric_urls), function(x) {
+    lyrics <- lyric_scraper(track_lyric_urls[[x]]$url)
+    lyrics <- str_replace_all(lyrics, '\\[Verse [[:digit:]]\\]|\\[Chorus\\]|\\[Outro\\]|\\[Verse\\]|\\[Refrain\\]|\\[Hook\\]|\\[Bridge\\]|\\[Intro\\]|\\[Instrumental\\]', '') # I'm kind of a regex n00b, I'm sure there's a better way to do this.
+    lyrics <- str_replace_all(lyrics, '\\n', ' ')
+    lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
+    lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
+    lyrics <- str_trim(lyrics)
+    tots <- list(
+        track_name = track_lyric_urls[[x]]$title,
+        lyrics = lyrics
+    )
+    print(tots$track_name)
+    return(tots)
+})
 ```
