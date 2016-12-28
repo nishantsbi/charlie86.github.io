@@ -98,9 +98,12 @@ lyrics_sent$track_name[lyrics_sent$track_name == 'A Punchup at a Wedding'] <- 'A
 lyrics_sent$track_name[lyrics_sent$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
 lyrics_sent$track_name[lyrics_sent$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
 
+lyrics_sent <- lyrics_sent %>%
+    mutate(track_name = tolower(gsub('[[:punct:]]', '', track_name)))
+
 track_df <- sound_df %>% 
     mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% 
-    left_join(lyrics_sent %>% mutate(track_name_join = tolower(gsub('[[:punct:]]', '', track_name))) %>% select(-track_name), by = 'track_name_join') %>% 
+    left_join(lyrics_sent, by = 'track_name') %>% 
     mutate(word_count = ifelse(is.na(word_count), 0, word_count),
            pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
            lyrical_density = word_count / duration_ms * 1000,
@@ -137,21 +140,19 @@ track_df %>%
                             '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                             '<b>Album:</b> ', album_name,
                             '<br><b>Track:</b> ', track_name,
-                            '<br><b>Valence:</b> ', sentiment_score),
-           '</a>') %>% 
+                            '<br><b>Valence:</b> ', sentiment_score, '</a>') %>% 
     ungroup %>% 
     select(track_name, tooltip, sentiment_score) %>% 
     arrange(-sentiment_score) %>% 
     hchart(x = track_name, y = sentiment_score, type = 'bar') %>%
     hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-    hc_yAxis(plotLines = list(list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
-                                   color = 'black',
-                                   width = 2,
-                                   value = mean(track_df$sentiment_score, na.rm = T),
-                                   zIndex = 4)
-    ),
-    max = 100
-    ) %>% 
+    hc_yAxis(max = 100, 
+             plotLines = list(
+                 list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
+                      color = 'black',
+                      width = 2,
+                      value = mean(track_df$sentiment_score, na.rm = T),
+                      zIndex = 4))) %>% 
     hc_xAxis(title = list(enabled = F)) %>% 
     hc_yAxis(title = list(text = 'Sentiment Score')) %>% 
     hc_title(text = 'Sentiment of Radiohead Songs') %>% 
