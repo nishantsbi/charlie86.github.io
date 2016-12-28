@@ -107,7 +107,7 @@ kbd,
 pre,
 samp {
   /*font-family: monospace, monospace;*/
-  font-family: 'FixedsysExcelsior301Regular';
+  font-family: 'FixedsysExcelsior301Regular' !important;
   src: url('fsex300-webfont.eot');
   src: url('fsex300-webfont.eot?#iefix') format('embedded-opentype'),
   url('fsex300-webfont.woff') format('woff'),
