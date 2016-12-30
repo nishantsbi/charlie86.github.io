@@ -27,17 +27,17 @@ sound_df %>%
     slice(1:10) %>% 
     select(track_name, valence)
 
-                                                        track_name valence
-1                                              We Suck Young Blood  0.0378
-2                                                  True Love Waits  0.0378
-3                                                      The Tourist  0.0400
-4                                        Motion Picture Soundtrack  0.0425
-5                                                 Sail To The Moon  0.0458
-6                                                        Videotape  0.0468
-7                                             Life In a Glasshouse  0.0516
-8  Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief  0.0517
-9                                                      The Numbers  0.0545
-10                                   Everything In Its Right Place  0.0585
+                         track_name valence
+1               We Suck Young Blood  0.0378
+2                   True Love Waits  0.0378
+3                       The Tourist  0.0400
+4         Motion Picture Soundtrack  0.0425
+5                  Sail To The Moon  0.0458
+6                         Videotape  0.0468
+7              Life In a Glasshouse  0.0516
+8   Tinker Tailor Soldier Sailor...  0.0517
+9                       The Numbers  0.0545
+10    Everything In Its Right Place  0.0585
 ```
 
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
@@ -66,18 +66,18 @@ lyrics_sent <- lyrics_df %>%
 arrange(lyrics_sent, -pct_sad)
 
 # A tibble: 208 x 3
-                                 track_name word_count    pct_sad
-                                      <chr>      <int>      <dbl>
-1                         Give Up The Ghost        190 0.17368421
-2                           True Love Waits         62 0.16129032
-3  Packt Like Sardines in a Crushed Tin Box        172 0.12790698
-4                              High and Dry        200 0.10000000
-5                                       Fog         73 0.09589041
-6                    How I Made My Millions         42 0.09523810
-7                   Exit Music (For a Film)        106 0.09433962
-8                                 The Thief        200 0.09000000
-9                                Backdrifts        146 0.08904110
-10                                 Let Down        161 0.07453416
+                 track_name word_count    pct_sad
+                      <chr>      <int>      <dbl>
+1         Give Up The Ghost        190 0.17368421
+2           True Love Waits         62 0.16129032
+3    Packt Like Sardines...        172 0.12790698
+4              High and Dry        200 0.10000000
+5                       Fog         73 0.09589041
+6    How I Made My Millions         42 0.09523810
+7   Exit Music (For a Film)        106 0.09433962
+8                 The Thief        200 0.09000000
+9                Backdrifts        146 0.08904110
+10                 Let Down        161 0.07453416
 # ... with 198 more rows
 ```
 
@@ -117,17 +117,17 @@ track_df %>%
 	arrange(sentiment_score) %>%
 	head(10)
 
-                                                        track_name sentiment_score
-1                                                  True Love Waits          1.0000
-2                                                Give Up The Ghost          3.7846
-3                                        Motion Picture Soundtrack         13.2105
-4                                              We Suck Young Blood         16.0205
-5                                                     Pyramid Song         16.8839
-6                                                        Videotape         17.4024
-7  Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief         17.8040
-8                                                  Dollars & Cents         18.0803
-9                                                         Let Down         18.2258
-10                                            Life In a Glasshouse         18.7413
+                         track_name sentiment_score
+1                   True Love Waits          1.0000
+2                 Give Up The Ghost          3.7846
+3         Motion Picture Soundtrack         13.2105
+4               We Suck Young Blood         16.0205
+5                      Pyramid Song         16.8839
+6                         Videotape         17.4024
+7   Tinker Tailor Soldier Sailor...         17.8040
+8                   Dollars & Cents         18.0803
+9                          Let Down         18.2258
+10             Life In a Glasshouse         18.7413
 ```
 
 We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
@@ -191,16 +191,17 @@ plot_track_df <- plot_df %>%
            album_number = as.numeric(as.factor(album_release_year))) %>% 
     ungroup
 
-hc <- hchart(plot_track_df, x = as.numeric(as.factor(album_release_year)), y = sentiment_score, group = album_name, type = 'scatter') %>% 
+album_chart <- hchart(dep_df, x = as.numeric(as.factor(album_release_year)), y = sentiment_score, group = album_name, type = 'scatter') %>% 
     hc_add_series_df(data = avg_line, type = 'line') %>%
     hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
     hc_colors(c(brewer.pal(n_distinct(track_df$album_name), 'Set3'), 'black')) %>% 
-    hc_xAxis(title = list(enabled = F)) %>% 
+    hc_xAxis(title = list(enabled = F), labels = list(enabled = F)) %>% 
     hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
     hc_title(text = 'Data Driven Depression') %>% 
     hc_subtitle(text = 'Radiohead sentiment by album') %>% 
     hc_add_theme(hc_theme_smpl())
-hc$x$hc_opts$series[[10]]$name <- 'Album Averages'
+album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
+album_chart
 ```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
 
