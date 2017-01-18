@@ -5,7 +5,7 @@
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
 url: "http://charlie86.github.io"
-baseurl: "rcharlie.com"
+baseurl: "midnightbarber.com"
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
@@ -23,7 +23,7 @@ description: A virtual proof that name is awesome!
 
 # List of links in the navigation bar
 navbar-links:
-  About Me: "http://rcharlie.com/aboutme/"
+  About Me: "http://midnightbarber.com/aboutme/"
   Shiny Server: "http://midnightbarber.net:3838"
   # Resources:
   #   - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
@@ -58,7 +58,7 @@ footer-links-active:
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "RCharlie.com"
+url-pretty: "midnightbarber.com"
 
 # --- Misc --- #
 
