@@ -14,7 +14,7 @@ baseurl: "rcharlie.com"
 # Of course don't forget to change the username and projectname to YOUR username and project
 
 # Name of website
-title: Charlie
+title: RCharlie
 
 # Short description of your site
 description: A virtual proof that name is awesome!
@@ -40,9 +40,8 @@ avatar: "/img/avatar-icon.png"
 # Important: you must keep the "name" parameter, everything else you can remove
 author:
   name: Charlie
-  email: wheresmychippy870@gmail.com
-  soundcloud: midnight-barber
-  github: charlie86    
+  email: charles.thompson@barcelonagse.eu
+  github: charlie86
   linkedin: yourlink  
   stackoverflow: yourlink 
  
