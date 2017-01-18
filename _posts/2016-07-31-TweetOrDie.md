@@ -5,32 +5,14 @@ subtitle: Measuring geographic candidate sentiment with Twitter
 bigimg: /img/candidates.jpg
 ---
 
-For my submission to Ari Lamstein's R Shapefile Contest, I looked at
-Twitter's sentiment towards Hillary Clinton and Donald Trump. Using
-Twitter's geotagging feature, I mapped current sentiment expressed in
-tweets across the United States and examined the effect of the
-Democratic National Convention on tweet sentiment.
+For my submission to Ari Lamstein's R Shapefile Contest, I looked at Twitter's sentiment towards Hillary Clinton and Donald Trump. Using Twitter's geotagging feature, I mapped current sentiment expressed in tweets across the United States and examined the effect of the Democratic National Convention on tweet sentiment.
 
 Database architecture
 ---------------------
 
-The tweets, henceforth referred to as twitts, are stored on a MySQL
-database I have on an AWS RDS instance. I have a script (included at the
-bottom of the post) hosted on EC2 to pull down live twitts mentioning
-Clinton or Trump's Twitter handles using the `streamR` package (I begain
-tracking the evening of Monday, July 25th, 2016).
+The tweets, henceforth referred to as twitts, are stored on a MySQL database I have on an AWS RDS instance. I have a script (included at the bottom of the post) hosted on EC2 to pull down live twitts mentioning Clinton or Trump's Twitter handles using the `streamR` package (I begain tracking the evening of Monday, July 25th, 2016).
 
-Before writing the twitts to the database, I use `httr` and the US
-Census API to reverse geocode the twitts for which lat/lon tracking is
-enabled (around 3% of all twitts). Additionally, I use `tidytext` to
-count the number of "positive" and "negative" words for each twitt and
-detect which candidate the twitt refers to. In cases where both
-candidates are mentioned, I do not calculate sentiment.
-
-While this specific application does not require streaming twitts (The
-`twitteR` package is great for pulling in past twitts), I built the
-infrastructure for a `shiny` app I'm working on to monitor real-time
-sentiment.
+Before writing the twitts to the database, I used `httr` and the US Census API to reverse geocode the twitts for which lat/lon tracking is enabled (around 3% of all twitts). Additionally, I used `tidytext` to count the number of "positive" and "negative" words for each twitt and detect which candidate the twitt refers to. In cases where both candidates were mentioned, I did not calculate sentiment.
 
 Load up
 -------
@@ -57,23 +39,16 @@ Twitter candidate sentiment by state
             AND `State.name` IS NOT NULL
            GROUP BY 1,2")
 
-To quantify sentiment, I took the mean difference in positive and
-negative words for each candidate per state. To compare states'
-candidate preferences, I then took the differences in the candidates'
-scores within states.
+To quantify sentiment, I took the mean difference in positive and negative words for each candidate per state. To compare states' candidate preferences, I then took the differences in the candidates' scores within states. 
 
     twitts <- twitts_og %>%
         spread(candidate, score, fill = 0) %>% 
         mutate(diff = round(Clinton - Trump, 2),
                name = state_name)
 
-To create the map, I used jbkunst's `higcharter` package, which comes
-preloaded with U.S. geojson files.
+To create the map, I used jbkunst's `higcharter` package, which comes preloaded with U.S. geojson files.
 
-States with positive values tend to have more positive language when
-tweeting about Clinton than Trump and are colored blue, while states
-with negative values are in red, indicating relatively more postive
-tweets for Trump.
+States with positive values tend to have more positive language when tweeting about Clinton than Trump and are colored blue, while states with negative values are in red, indicating relatively more postive tweets for Trump.
 
     data("usgeojson")
     highchart() %>% 
@@ -87,15 +62,9 @@ tweets for Trump.
 
 <div>{% include twitt_time.html %}</div>
 
-Using
-almost identical code, I further broke it down to the county level.
-However, because I had less than a week of data, and such a small
-portion of twitts were geotagged, the map is fairly empty.
+Using almost identical code, I further broke it down to the county level. However, because I had less than a week of data, and such a small portion of twitts were geotagged, the map is fairly empty.
 
-One note here is that sparsity of the county level data led to more
-extreme values. Because all I looked at was whether or not the
-differences in scores were positive or negative, I normalized the scores
-to fit within negative and positive one.
+One note here is that sparsity of the county level data led to more extreme values. Because all I looked at was whether or not the differences in scores were positive or negative, I normalized the scores to fit within negative and positive one.
 
     county_twitts_og <- cQuery("SELECT 
            candidate,
@@ -118,13 +87,7 @@ to fit within negative and positive one.
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-3-1.png) Here
-we see a more balanced breakout of Trump vs Clinton sentiment. With
-national polls being so tight at the moment, the overwhelmingly blue
-state map could be due to Clinton's "convention bounce", as the DNC was
-this week. To further explore this, I took a look at the overall
-sentiment over time. For interpretation's sake, I again normalized the
-score to fit within negative and positive one.
+![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-3-1.png) Here we see a more balanced breakout of Trump vs Clinton sentiment. With national polls being so tight at the moment, the overwhelmingly blue state map could be due to Clinton's "convention bounce", as the DNC was this week. To further explore this, I took a look at the overall sentiment over time. For interpretation's sake, I again normalized the score to fit within negative and positive one.
 
     stuff <- cQuery("SELECT
             concat(date(created_at), ' ', hour(created_at), ':00') AS time,
@@ -140,18 +103,12 @@ score to fit within negative and positive one.
         arrange(time)
     hchart(x = time, y = score, group = candidate, type = 'spline', object = stuff_plot)
 
-![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-4-1.png) There
-definitely appear to be spikes in Clinton's sentiment during the
-primetime DNC events! Specifically, Michelle Obama's midnight speech on
-Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's
-speech at midnight on Wednesday, and Hillary's formal acceptance speech
-midnight Thursday.
+![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-4-1.png) There definitely appear to be spikes in Clinton's sentiment during the primetime DNC events! Specifically, Michelle Obama's midnight speech on Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's speech at midnight on Wednesday, and Hillary's formal acceptance speech midnight Thursday.
 
-Below is the script I use to pull in twitts and write them to RDS
-(apologies for the lack of comments).
+Below is the script I use to pull in twitts and write them to RDS.
 
 Thank you for reading! If you have any questions please feel free to
-email me anytime at <wheresmychippy870@gmail.com>.
+email me anytime at <charles.thompson@barcelonagse.eu>.
 
 pullTwitts.R
 ------------
