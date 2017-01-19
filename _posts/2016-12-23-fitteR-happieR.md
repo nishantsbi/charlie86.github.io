@@ -44,7 +44,7 @@ Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie he
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
-For my specific metric, I chose the number of "sad" words as a share of all words in a song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
+To quantify sad lyrics, I calculated the number of "sad" words as a share of all words in a song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
 ```r
 library(tidytext)
@@ -179,15 +179,15 @@ avg_line <- plot_df %>%
     group_by(album_release_year, album_name, album_img) %>% 
     summarise(avg = mean(sentiment_score)) %>% 
     ungroup %>% 
-    transmute(x = as.numeric(as.factor(album_release_year)), y = avg,
+    transmute(x = as.numeric(as.factor(album_release_year)), 
+              y = avg,
               tooltip = paste0('<a style = "margin-right:', nchar(album_name) * 10, 'px">',
                                '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                                '<b>Album:</b> ', album_name,
                                '<br><b>Average Track Sentiment Score:</b> ', round(avg, 4),
                                '</a>'))
 plot_track_df <- plot_df %>% 
-    mutate(tooltip = paste0(tooltip, '<br><b>Sentiment Score:</b> ', sentiment_score,
-                            '</a>'),
+    mutate(tooltip = paste0(tooltip, '<br><b>Sentiment Score:</b> ', sentiment_score, '</a>'),
            album_number = as.numeric(as.factor(album_release_year))) %>% 
     ungroup
 
@@ -207,36 +207,6 @@ album_chart
 
 ### How does sentiment evolve within Radiohead's albums?
 
-<!-- ```r
-library(purrr)
-library(htmltools)
-track_num_album <- track_df %>% 
-    rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
-                        '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
-                        '<b>Album:</b> ', album_name,
-                        '<br><b>Track:</b> ', track_name)) %>% 
-    ungroup %>% 
-    group_by(album_name) %>% 
-    mutate(tooltip = paste0(tooltip,
-                        '<br><b>Album Position:</b> ', track_number, '/', max(track_number),
-                        '<br><b>Sentiment Score:</b> ', sentiment_score,
-                        '</a>'
-                            )) %>% 
-    ungroup
-
-map(track_num_album %>% arrange(album_release_date) %>% select(album_name) %>% unique %>% .[[1]], function(x) {
-    hchart(track_num_album %>% filter(album_name == x), x = track_number, y = sentiment_score, type = 'line') %>% 
-        hc_title(text = x) %>% 
-        hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-        hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
-        hc_xAxis(title = list(text = 'Track Number'),
-                 allowDecimals = F) %>% 
-        hc_add_theme(hc_theme_smpl())
-}) %>% hw_grid(rowheight = 200, ncol = 3) %>% browsable
-```
-<iframe src="/htmlwidgets/fitterhappier/track_num_album"></iframe> -->
-
 ```r
 track_order <- track_df %>% 
     group_by(album_name, album_img) %>% 
@@ -251,9 +221,7 @@ track_order <- track_df %>%
     group_by(album_name) %>% 
     mutate(tooltip = paste0(tooltip,
                         '<br><b>Album Position:</b> ', track_number, '/', max(track_number),
-                        '<br><b>Sentiment Score:</b> ', sentiment_score,
-                        '</a>'
-                            )) %>% 
+                        '<br><b>Sentiment Score:</b> ', sentiment_score, '</a>')) %>% 
     ungroup %>% 
     arrange(scaled_track_number) %>% 
     mutate(smooth_track_order = loess(sentiment_score ~ scaled_track_number, data = .) %>% .$fitted)
@@ -281,7 +249,7 @@ track_num_combined
 
 ### Spotify Web API
 
-The Spotify Web API itself has pretty good documentation, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead". Note that you can also find any single uri by right clicking on the track, album, or artist directly within the Spotify app, but that would be a huge pain in the ass for this use case.
+The Spotify Web API itself is well documented, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead". Note that you can also find any single uri by right clicking on the track, album, or artist directly within the Spotify app, but that would be a huge pain in the ass for this use case.
 
 First, I created a function to search for artist names.
 
