@@ -23,7 +23,7 @@ bigimg: /img/wood.jpg
     </p>
   
     <div class="post-entry">
-      {{ post.content | truncatewords: 50 | strip_html | xml_escape}}
+      {{ post.content | truncatewords: 50 | strip_html | xml_escape | remove:'.'}}
 	  <a href="{{ post.url }}" class="post-read-more">[Read&nbsp;More]</a>
     </div>
   
