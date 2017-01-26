@@ -59,7 +59,7 @@ States with positive values tend to have more positive language when tweeting ab
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
 <!-- ![](/img/tweetordie/state_map.png) -->
-<img src="/img/posts/fitterhappier/state_map.png">
+<img src="/img/posts/tweetordie/state_map.png">
 
 Using almost identical code, I further broke it down to the county level. However, because I had less than a week of data, and such a small portion of twitts were geotagged, the map is fairly empty.
 
