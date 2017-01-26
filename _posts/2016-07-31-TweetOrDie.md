@@ -58,7 +58,7 @@ States with positive values tend to have more positive language when tweeting ab
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-![](/img/tweetordie/state_map.png)
+<!-- ![](/img/tweetordie/state_map.png) -->
 
 Using almost identical code, I further broke it down to the county level. However, because I had less than a week of data, and such a small portion of twitts were geotagged, the map is fairly empty.
 
@@ -85,7 +85,7 @@ One note here is that sparsity of the county level data led to more extreme valu
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-![](/img/tweetordie/county_map.png)
+<!-- ![](/img/tweetordie/county_map.png) -->
 
 Here we see a more balanced breakout of Trump vs Clinton sentiment. With national polls being so tight at the moment, the overwhelmingly blue state map could be due to Clinton's "convention bounce", as the DNC was this week. To further explore this, I took a look at the overall sentiment over time. For interpretation's sake, I again normalized the score to fit within negative and positive one.
 
@@ -103,7 +103,7 @@ Here we see a more balanced breakout of Trump vs Clinton sentiment. With nationa
         arrange(time)
     hchart(x = time, y = score, group = candidate, type = 'spline', object = stuff_plot)
 
-![](/img/tweetordie/time_chart.png) 
+<!-- ![](/img/tweetordie/time_chart.png)  -->
 There definitely appear to be spikes in Clinton's sentiment during the primetime DNC events! Specifically, Michelle Obama's midnight speech on Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's speech at midnight on Wednesday, and Hillary's formal acceptance speech midnight Thursday.
 
 Below is the script I use to pull in twitts and write them to RDS.
