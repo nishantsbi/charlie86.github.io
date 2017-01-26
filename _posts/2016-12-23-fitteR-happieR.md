@@ -42,7 +42,7 @@ sound_df %>%
 
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
 
-While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by researchers Saif Mohammad and Peter Turney. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
+While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
 To quantify sad lyrics, I calculated the number of "sad" words as a share of all words in a song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
@@ -81,12 +81,12 @@ arrange(lyrics_sent, -pct_sad)
 # ... with 198 more rows
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To combine musical and lyrical sentiment, I turned to a previous R Blogger's analysis.
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! Now onto combining lyrical sentiment with valence.
 
 ## Lyrical Density
 In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! Lyrical density is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 0 and 1, so that the saddest song had a score of 0 and the least sad song scored 1.
+Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
 
 ```r
 library(scales)
@@ -107,7 +107,7 @@ track_df <- sound_df %>%
     mutate(word_count = ifelse(is.na(word_count), 0, word_count),
            pct_sad = ifelse(is.na(pct_sad), 0, pct_sad),
            lyrical_density = word_count / duration_ms * 1000,
-           sentiment_score = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2)) 
+           sentiment_score = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2, to = c(1, 100))) 
 ```
 
 Drum Roll...
@@ -162,9 +162,11 @@ track_df %>%
 <iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
 
 ## If you think this is over, then you're wrong
-It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a number of other interesting questions to explore.
+It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a couple of other interesting questions to explore.
 
 ### Has Radiohead become sadder over time?
+Radiohead.
+ 
 ```r
 library(RColorBrewer)
 
@@ -242,8 +244,6 @@ track_num_combined$x$hc_opts$series[[10]]$name <- 'Smooth Fitted Line'
 track_num_combined
 ```
 <iframe src="/htmlwidgets/fitterhappier/track_num_combined"></iframe>
-
-### What is the prototypical Radiohead song?
 
 ## Data Appendix
 

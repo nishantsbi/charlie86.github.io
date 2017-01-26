@@ -58,9 +58,7 @@ States with positive values tend to have more positive language when tweeting ab
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-<!-- ![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-2-1.png)  -->
-
-<div>{% include twitt_time.html %}</div>
+![](/img/tweetordie/state_map.png)
 
 Using almost identical code, I further broke it down to the county level. However, because I had less than a week of data, and such a small portion of twitts were geotagged, the map is fairly empty.
 
@@ -87,7 +85,9 @@ One note here is that sparsity of the county level data led to more extreme valu
         hc_colorAxis(dataClasses = color_classes(breaks = c(-1, 0, 1), colorRampPalette(c('#E91D0E', '#232066'))(3))) %>% 
         hc_legend(layout = "vertical", align = "right", floating = TRUE)
 
-![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-3-1.png) Here we see a more balanced breakout of Trump vs Clinton sentiment. With national polls being so tight at the moment, the overwhelmingly blue state map could be due to Clinton's "convention bounce", as the DNC was this week. To further explore this, I took a look at the overall sentiment over time. For interpretation's sake, I again normalized the score to fit within negative and positive one.
+![](/img/tweetordie/county_map.png)
+
+Here we see a more balanced breakout of Trump vs Clinton sentiment. With national polls being so tight at the moment, the overwhelmingly blue state map could be due to Clinton's "convention bounce", as the DNC was this week. To further explore this, I took a look at the overall sentiment over time. For interpretation's sake, I again normalized the score to fit within negative and positive one.
 
     stuff <- cQuery("SELECT
             concat(date(created_at), ' ', hour(created_at), ':00') AS time,
@@ -103,7 +103,8 @@ One note here is that sparsity of the county level data led to more extreme valu
         arrange(time)
     hchart(x = time, y = score, group = candidate, type = 'spline', object = stuff_plot)
 
-![](TweetOrDie_files/figure-markdown_strict/unnamed-chunk-4-1.png) There definitely appear to be spikes in Clinton's sentiment during the primetime DNC events! Specifically, Michelle Obama's midnight speech on Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's speech at midnight on Wednesday, and Hillary's formal acceptance speech midnight Thursday.
+![](/img/tweetordie/time_chart.png) 
+There definitely appear to be spikes in Clinton's sentiment during the primetime DNC events! Specifically, Michelle Obama's midnight speech on Monday, the roll call vote ending at 7pm on Tuesday, Barack Obama's speech at midnight on Wednesday, and Hillary's formal acceptance speech midnight Thursday.
 
 Below is the script I use to pull in twitts and write them to RDS.
 
