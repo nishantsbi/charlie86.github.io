@@ -5,7 +5,7 @@ subtitle: Measuring geographic candidate sentiment with Twitter
 bigimg: /img/candidates.jpg
 ---
 
-For my submission to Ari Lamstein's R Shapefile Contest, I looked at Twitter's sentiment towards Hillary Clinton and Donald Trump. Using Twitter's geotagging feature, I mapped current sentiment expressed in tweets across the United States and examined the effect of keynote speeches at the Democratic National Convention on tweet sentiment.
+For my submission to Ari Lamstein's [R Shapefile Contest](http://www.arilamstein.com/blog/2016/07/12/announcing-r-shapefile-contest/), I looked at Twitter's sentiment towards Hillary Clinton and Donald Trump. Using Twitter's geotagging feature, I mapped current sentiment expressed in tweets across the United States and examined the effect of keynote speeches at the Democratic National Convention on tweet sentiment.
 
 ## Database architecture
 
