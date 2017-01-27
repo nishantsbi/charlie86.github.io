@@ -165,7 +165,7 @@ track_df %>%
 It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a couple of other interesting questions to explore.
 
 ### Has Radiohead become sadder over time?
-Radiohead.
+Since Pablo Honey, a decent but fairly typical album of the 90's alt rock era, Radiohead has continously experimented with new sounds. While the band has incorporated instruments and techniques from jazz, classical, and electronic music, their trademark gloominess has permeated throughout their musical journey.
  
 ```r
 library(RColorBrewer)
@@ -375,7 +375,7 @@ library(rvest)
 
 artist_name <- 'radiohead'
 n_results <- 10
-token <- '0WblX68Oq3W8IqgBwBDL8MqY0cSPy5hOsD7L3aLQLd6rXxQYdh0Fs_ZbhtgeGn9O'
+token <- xxxxxxx
 
 genius_get_artists <- function(artist_name, n_results = 10) {
     baseURL <- 'https://api.genius.com/search?q=' 
