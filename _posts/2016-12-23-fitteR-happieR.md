@@ -42,9 +42,9 @@ sound_df %>%
 
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
 
-While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive and difficult to pin down. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
+While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the included NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
-To quantify sad lyrics, I calculated the number of "sad" words as a share of all words in a song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
+To quantify sad lyrics, I calculated the share of "sad" words per song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
 ```r
 library(tidytext)
@@ -65,7 +65,6 @@ lyrics_sent <- lyrics_df %>%
 
 arrange(lyrics_sent, -pct_sad)
 
-# A tibble: 208 x 3
                  track_name word_count    pct_sad
                       <chr>      <int>      <dbl>
 1         Give Up The Ghost        190 0.17368421
@@ -78,15 +77,14 @@ arrange(lyrics_sent, -pct_sad)
 8                 The Thief        200 0.09000000
 9                Backdrifts        146 0.08904110
 10                 Let Down        161 0.07453416
-# ... with 198 more rows
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! Now onto combining lyrical sentiment with valence.
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! Next, I combined lyrical sentiment with valence.
 
 ## Lyrical Density
 In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! Lyrical density is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of sonic sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
+Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of song sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
 
 ```r
 library(scales)
@@ -130,8 +128,7 @@ track_df %>%
 10             Life In a Glasshouse         18.7413
 ```
 
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to-date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
-
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
 
 ```r
 track_df %>% 
@@ -161,12 +158,9 @@ track_df %>%
 ```
 <iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
 
-## If you think this is over, then you're wrong
-It would be a shame to throw away all of this data without digging a little deeper. While searching for the most depressing song, I found a couple of other interesting questions to explore.
+## Bonus: What is Radiohead's saddest album?
+Since Pablo Honey, a decent but fairly typical album of the 90's alt rock era, Radiohead has continously experimented with new sounds. As they've incorporated instruments and techniques from jazz, classical, and electronic music, I was curious as to how their trademark gloominess had evolved over time. To answer this question, I plotted the average sadness for each album over release year.
 
-### Has Radiohead become sadder over time?
-Since Pablo Honey, a decent but fairly typical album of the 90's alt rock era, Radiohead has continously experimented with new sounds. While the band has incorporated instruments and techniques from jazz, classical, and electronic music, their trademark gloominess has permeated throughout their musical journey.
- 
 ```r
 library(RColorBrewer)
 
@@ -207,43 +201,7 @@ album_chart
 ```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
 
-### How does sentiment evolve within Radiohead's albums?
-
-```r
-track_order <- track_df %>% 
-    group_by(album_name, album_img) %>% 
-    mutate(scaled_track_number = rescale(track_number / max(track_number), c(0, 1))) %>% 
-    ungroup %>% 
-    rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
-                        '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
-                        '<b>Album:</b> ', album_name,
-                        '<br><b>Track:</b> ', track_name)) %>% 
-    ungroup %>% 
-    group_by(album_name) %>% 
-    mutate(tooltip = paste0(tooltip,
-                        '<br><b>Album Position:</b> ', track_number, '/', max(track_number),
-                        '<br><b>Sentiment Score:</b> ', sentiment_score, '</a>')) %>% 
-    ungroup %>% 
-    arrange(scaled_track_number) %>% 
-    mutate(smooth_track_order = loess(sentiment_score ~ scaled_track_number, data = .) %>% .$fitted)
-
-track_num_combined <- highchart() %>% 
-    hc_add_series_df(data = track_order %>% arrange(album_release_year) %>% select(x = scaled_track_number, y = sentiment_score, group = album_name, tooltip = tooltip), group = group, type = 'scatter') %>% 
-    hc_add_series_df(data = track_order %>% select(x = scaled_track_number, y = smooth_track_order) %>% mutate(tooltip = 'Smooth Fitted Line'), type = 'line') %>% 
-    hc_colors(c(brewer.pal(n_distinct(track_df$album_name), 'Set3'), 'black')) %>% 
-    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-    hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
-    hc_xAxis(labels = list(formatter = JS(paste0("function() {return this.value * 100 + '%';}"))),
-             title = list(text = 'Album Position Percentile')) %>% 
-    hc_title(text = 'Everything in its Right Place') %>% 
-    hc_subtitle(text = 'Track Sentiment by Album Position') %>% 
-    hc_add_theme(hc_theme_smpl())
-track_num_combined$x$hc_opts$plotOptions$series$marker$symbol <- 'circle'
-track_num_combined$x$hc_opts$series[[10]]$name <- 'Smooth Fitted Line'
-track_num_combined
-```
-<iframe src="/htmlwidgets/fitterhappier/track_num_combined"></iframe>
+Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the saddest average sentiment, driven in part by its finale, "True Love Waits". Interestingly, their least sad album, "The King of Limbs", came out just two years prior.
 
 ## Data Appendix
 
@@ -427,7 +385,8 @@ lyric_scraper <- function(url) {
 
 lyrics_df <- map_df(1:length(track_lyric_urls), function(x) {
     lyrics <- lyric_scraper(track_lyric_urls[[x]]$url)
-    lyrics <- str_replace_all(lyrics, '\\[Verse [[:digit:]]\\]|\\[Chorus\\]|\\[Outro\\]|\\[Verse\\]|\\[Refrain\\]|\\[Hook\\]|\\[Bridge\\]|\\[Intro\\]|\\[Instrumental\\]', '') # I'm kind of a regex n00b, I'm sure there's a better way to do this.
+    # strip out non-lyric text and extra spaces
+    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]', '')
     lyrics <- str_replace_all(lyrics, '\\n', ' ')
     lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
     lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
