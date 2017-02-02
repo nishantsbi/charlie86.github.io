@@ -201,7 +201,7 @@ album_chart
 ```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
 
-Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the saddest average sentiment, driven in part by its finale, "True Love Waits". Interestingly, their least sad album, "The King of Limbs", came out just two years prior.
+Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the saddest average sentiment. This is largely driven largely by the fact that its finale, "True Love Waits", is the saddest song overall - exclude it, and "Amnesiac" takes the cake.
 
 ## Data Appendix
 
