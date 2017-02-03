@@ -1,11 +1,7 @@
 ---
 layout: post
 title: How's Donald?
-subtitle: Real-time dashboard of President Trump's mood, as evoked via his Twitter posts
+subtitle: Comparing the tone of media coverage for Presidents Trump and Obama
 ---
 
-Since the outset of his campaign, President Trump has made ample use of Twitter.
-
-From his nuanced views on immigration policy to middle-of-the-night tirades against the media, @realDonaldTrump provides instant access into the 45th President's mind. At his second White House Press Briefing, Sean Spicer condemned the media's coverage of the newly elected President Trump, saying it was "demoralizing" for the President to always hear "It's not big enough, not good enough, you can't win." 
-
-President Trump has had an ongoing war with the media, so much that Sean Spicer noted that it was "demoralizing"
+Sean Spicer recently condemned the media's treatment of President Trump, saying "the default narrative is always negative." Applying sentiment analysis to news headlines, I quantified the negativity of Trump’s current media coverage and compared it to President Obama’s in 2009.
