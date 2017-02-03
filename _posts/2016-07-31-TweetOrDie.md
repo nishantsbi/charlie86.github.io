@@ -9,16 +9,6 @@ For my submission to Ari Lamstein's [R Shapefile Contest](http://www.arilamstein
 
 ## Database architecture
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
-</script>
-
-When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
-$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
-
 The tweets, henceforth referred to as twitts, are stored on a MySQL database I have on an AWS RDS instance. I have a script (included at the bottom of the post) hosted on EC2 to pull down live twitts mentioning Clinton or Trump's Twitter handles using the `streamR` package (I begain tracking the evening of Monday, July 25th, 2016).
 
 Before writing the twitts to the database, I used `httr` and the US Census API to reverse geocode the twitts for which lat/lon tracking is enabled (around 3% of all twitts). Additionally, I used `tidytext` to count the number of "positive" and "negative" words for each twitt and detect which candidate the twitt refers to. In cases where both candidates were mentioned, I did not calculate sentiment.

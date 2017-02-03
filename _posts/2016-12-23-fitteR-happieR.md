@@ -84,7 +84,19 @@ So by the percentage of total words that were sad, "Give Up The Ghost" wins, wit
 ## Lyrical Density
 In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of...Radiohead! Lyrical density is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of song sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
+Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of song sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. 
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
+$$sentimentScore = {(1-valence)+(pctSad*(1+lyricalDensity)) \over 2}.$$
+
+I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
 
 ```r
 library(scales)
