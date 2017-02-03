@@ -9,8 +9,6 @@ For my submission to Ari Lamstein's [R Shapefile Contest](http://www.arilamstein
 
 ## Database architecture
 
-<MATH>&int_a_^b^{f(x)<over>1+x} dx</MATH>
-
 The tweets, henceforth referred to as twitts, are stored on a MySQL database I have on an AWS RDS instance. I have a script (included at the bottom of the post) hosted on EC2 to pull down live twitts mentioning Clinton or Trump's Twitter handles using the `streamR` package (I begain tracking the evening of Monday, July 25th, 2016).
 
 Before writing the twitts to the database, I used `httr` and the US Census API to reverse geocode the twitts for which lat/lon tracking is enabled (around 3% of all twitts). Additionally, I used `tidytext` to count the number of "positive" and "negative" words for each twitt and detect which candidate the twitt refers to. In cases where both candidates were mentioned, I did not calculate sentiment.
