@@ -93,8 +93,7 @@ Fortunately, track duration was included in the Spotify dataset, so after a simp
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
 
-When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
-$$sentimentScore = {(1-valence)+(pctSad*(1+lyricalDensity)) \over 2}.$$
+$$sentiment_score = {(1 - valence) + (pct_sad * (1 + lyrical_density)) \over 2}$$
 
 I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
 
