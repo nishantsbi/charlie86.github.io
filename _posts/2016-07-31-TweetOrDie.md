@@ -9,7 +9,7 @@ For my submission to Ari Lamstein's [R Shapefile Contest](http://www.arilamstein
 
 ## Database architecture
 
-<MATH>&int;_a_^b^{f(x)<over>1+x} dx</MATH>
+<MATH>&int_a_^b^{f(x)<over>1+x} dx</MATH>
 
 The tweets, henceforth referred to as twitts, are stored on a MySQL database I have on an AWS RDS instance. I have a script (included at the bottom of the post) hosted on EC2 to pull down live twitts mentioning Clinton or Trump's Twitter handles using the `streamR` package (I begain tracking the evening of Monday, July 25th, 2016).
 
