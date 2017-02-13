@@ -126,14 +126,16 @@ In the strangest coincidence, it turns out that a fellow R Blogger previously ca
 
 Fortunately, track duration was included in the Spotify dataset, so after a simple join I calculated lyrical density for each track and created my final measure of song sadness, taking the average of valence and the percentage of sad words weighted by lyrical density. 
 
-<script type="text/x-mathjax-config">
+<!-- <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
-</script>
+</script> -->
 
-$$sentimentSscore = {(1 - valence) + (pctSad * (1 + lyricalDensity)) \over 2}$$
+<!-- $$sentimentSscore = {(1 - valence) + (pctSad * (1 + lyricalDensity)) \over 2}$$ -->
+
+<img src="/img/posts/fitterhappier/sentimentscore.png">
 
 I also rescaled the metric to fit within 1 and 100, so that the saddest song had a score of 1 and the least sad song scored 100.
 
