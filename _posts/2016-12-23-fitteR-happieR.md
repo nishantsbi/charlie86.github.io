@@ -13,10 +13,9 @@ Spotify recently released their [Web API](https://developer.spotify.com/web-api/
 
 So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/){:target="_blank"} to pull track-level data. In my analysis I used a combination of both valence and lyrical sentiment, and the code for retrieiving both data sets is included at the end of the post. I used the resulting dataframes, `sound_df` and `lyrics_df`, for the following analysis.
 
-```r
-head(sound_df)
-head(lyrics_df)
-```
+
+<iframe src="/htmlwidgets/fitterhappier/sound_df_tbl.html"></iframe>
+<iframe src="/htmlwidgets/fitterhappier/lyrics_df_tbl.html"></iframe>
 
 ## Quantifying Sentiment
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
@@ -38,7 +37,33 @@ sound_df %>%
 8   Tinker Tailor Soldier Sailor...  0.0517
 9                       The Numbers  0.0545
 10    Everything In Its Right Place  0.0585
+
+track_df %>% 
+    rowwise %>% 
+    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
+                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
+                            '<b>Album:</b> ', album_name,
+                            '<br><b>Track:</b> ', track_name,
+                            '<br><b>Valence:</b> ', sentiment_score, '</a>') %>% 
+    ungroup %>% 
+    select(track_name, tooltip, sentiment_score) %>% 
+    arrange(-sentiment_score) %>% 
+    hchart(x = track_name, y = sentiment_score, type = 'bar') %>%
+    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
+    hc_yAxis(max = 100, 
+             plotLines = list(
+                 list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
+                      color = 'black',
+                      width = 2,
+                      value = mean(track_df$sentiment_score, na.rm = T),
+                      zIndex = 4))) %>% 
+    hc_xAxis(title = list(enabled = F)) %>% 
+    hc_yAxis(title = list(text = 'Sentiment Score')) %>% 
+    hc_title(text = 'Sentiment of Radiohead Songs') %>% 
+    hc_subtitle(text = 'Average of track valence and lyrical sentiment, weighted by lyrical density') %>% 
+    hc_add_theme(hc_theme_smpl())
 ```
+<!-- <iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe> -->
 
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
 
@@ -139,38 +164,7 @@ track_df %>%
 10             Life In a Glasshouse         18.7413
 ```
 
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. To visualize the results, I plotted the sentiment score of each song with the `highcharter` package.
-
-```r
-track_df %>% 
-    rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
-                            '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
-                            '<b>Album:</b> ', album_name,
-                            '<br><b>Track:</b> ', track_name,
-                            '<br><b>Valence:</b> ', sentiment_score, '</a>') %>% 
-    ungroup %>% 
-    select(track_name, tooltip, sentiment_score) %>% 
-    arrange(-sentiment_score) %>% 
-    hchart(x = track_name, y = sentiment_score, type = 'bar') %>%
-    hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-    hc_yAxis(max = 100, 
-             plotLines = list(
-                 list(label = list(text = 'Average', verticalAlign = 'middle', y = 50),
-                      color = 'black',
-                      width = 2,
-                      value = mean(track_df$sentiment_score, na.rm = T),
-                      zIndex = 4))) %>% 
-    hc_xAxis(title = list(enabled = F)) %>% 
-    hc_yAxis(title = list(text = 'Sentiment Score')) %>% 
-    hc_title(text = 'Sentiment of Radiohead Songs') %>% 
-    hc_subtitle(text = 'Average of track valence and lyrical sentiment, weighted by lyrical density') %>% 
-    hc_add_theme(hc_theme_smpl())
-```
-<iframe src="/htmlwidgets/fitterhappier/track_sentiment_bar.html"></iframe>
-
-## Bonus: What is Radiohead's saddest album?
-Since Pablo Honey, a decent but fairly typical album of the 90's alt rock era, Radiohead has continously experimented with new sounds. As they've incorporated instruments and techniques from jazz, classical, and electronic music, I was curious as to how their trademark gloominess had evolved over time. To answer this question, I plotted the average sadness for each album over release year.
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Along with tieing for the lowest valence, 16% of its lyrics are associated with sadness. Hearing the song's melancholy piano progression and chorus of "Just don't leave. Don't leave", it looks like sentiment score did a pretty decent job here. To see how it stacked up across all nine albums, I calculated the average sentiment score per album and plotted each song by album release date.
 
 ```r
 library(RColorBrewer)
