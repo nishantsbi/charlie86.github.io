@@ -14,8 +14,8 @@ Spotify recently released their [Web API](https://developer.spotify.com/web-api/
 So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/){:target="_blank"} to pull track-level data. In my analysis I used a combination of both valence and lyrical sentiment, and the code for retrieiving both data sets is included at the end of the post. I used the resulting dataframes, `sound_df` and `lyrics_df`, for the following analysis.
 
 
-<iframe src="/htmlwidgets/fitterhappier/sound_df_tbl.html"></iframe>
-<iframe src="/htmlwidgets/fitterhappier/lyrics_df_tbl.html"></iframe>
+<iframe src="/htmlwidgets/fitterhappier/sound_df_tbl.html" height="400px"></iframe>
+<iframe src="/htmlwidgets/fitterhappier/lyrics_df_tbl.html" height="800px"></iframe>
 
 ## Quantifying Sentiment
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
