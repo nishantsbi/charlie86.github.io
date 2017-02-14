@@ -113,7 +113,7 @@ library(scales)
 # Before, joining, I reconciled the differences between a few of the track names
 track_df <- track_df %>% 
     mutate(lyrical_density = word_count / duration_ms * 1000,
-           sentiment_score = rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2, to = c(1, 100))) 
+           sentimentScore = rescale(1 - ((1 - valence) + (pctSad * (1 + lyricalDensity))) / 2, to = c(1, 100))) 
 ```
 
 Drum Roll...
