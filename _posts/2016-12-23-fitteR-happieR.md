@@ -101,7 +101,7 @@ Using track duration and word count, I calculated lyrical density for each track
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
 
-$$sentiment_score = {(1 - valence) + (pct_sad * (1 + lyrical_density)) \over 2}$$
+$$sentimentScore = {(1 - valence) + (pctSad * (1 + lyricalDensity)) \over 2}$$
 
 <img src="/img/posts/fitterhappier/sentimentscore.png">
 
