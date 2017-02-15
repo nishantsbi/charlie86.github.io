@@ -89,12 +89,12 @@ arrange(track_sent, -pct_sad)
 10                 Let Down        161 0.07453416
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To combine lyrical and musical sadness, I turned to a fellow R Blogger's analysis.
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! 
 
 ## Lyrical Density
-In the strangest coincidence, it turns out that someone else previously conducted an [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} in R of Radiohead lyrics! They considered the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
+To combine lyrical and musical sadness, I turned to a fellow R Blogger's [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"}, which coincidentally also dealt with Radiohead lyrics. They explored the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Using track duration and word count, I calculated lyrical density for each track. To create my final measure of song sadness, I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
+Using track duration and word count, I calculated lyrical density for each track. To create my final "sentiment score", I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
 
 <img src="/img/posts/fitterhappier/sentimentscore.png">
 
@@ -103,7 +103,6 @@ I also rescaled the metric to fit within 1 and 100, so that the saddest song had
 ```r
 library(scales)
 
-# Before, joining, I reconciled the differences between a few of the track names
 track_df <- track_df %>% 
     mutate(lyrical_density = word_count / duration_ms * 1000,
            sentimentScore = rescale(1 - ((1 - valence) + (pctSad * (1 + lyricalDensity))) / 2, to = c(1, 100))) 
@@ -132,6 +131,8 @@ track_df %>%
 We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Along with tieing for the lowest valence, it had the second highest percentage of sad lyrics, at 16%. Specifically, the algorithm picked out the words "drown", "killing", "crazy", "haunted", and "leave" - the last of which was repeated six times in the chorus ("Just don't leave. Don't leave"). 
 
 To see how sentiment evoloved across all nine albums, I calculated the average sentiment score per album and plotted each song by album release date.
+
+To spice up the plot a bit, I created a custom tooltip incorporating the `album_img` provided by Spotify.
 
 ```r
 library(RColorBrewer)
@@ -176,13 +177,13 @@ album_chart
 
 Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the saddest average sentiment score. This is driven largely by the fact that its finale, "True Love Waits", was the saddest song overall - exclude it, and "Amnesiac" takes the cake.
 
-Thanks for reading!
+Thanks for reading! The Appendix that follows details how to pull the data used for this analysis.
 
 ## Appendix
 
 ### Spotify Web API
 
-The Spotify Web API is well documented, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify segments the API calls into track, album, and artist hierarchies, each of which need their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` section of API. To get there, you need the `album uri` from the `artists` section, for which you need the `artist uri`. To get that, you can use the `search` API call to look for "radiohead".
+The Spotify Web API is well documented, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify has separate API calls for tracks, albums, and artists, each of which needs their own identifying "uri" to access. To get track info, you need the `track uri`, which can be found within the `albums` call. To get there, you need the `album uri` from the `artists` call, for which you need the `artist uri`. To get that, you can use the `search` API call to look for any artist by string (e.g. "radiohead").
 
 First, I created a function to search for artist names.
 
