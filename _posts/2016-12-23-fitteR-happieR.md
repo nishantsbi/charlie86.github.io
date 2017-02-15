@@ -202,7 +202,7 @@ get_artists <- function(artist_name) {
         list(
             artist_name = res[[x]]$name,
             artist_uri = str_replace(res[[x]]$uri, 'spotify:artist:', ''), # remove meta info from the uri string
-            artist_img = ifelse(length(res[[x]]$images) > 0, res[[x]]$images[[1]]$url, NA) # we'll grab this just for fun
+            artist_img = ifelse(length(res[[x]]$images) > 0, res[[x]]$images[[1]]$url, NA)
         )
     })
     
@@ -254,7 +254,7 @@ Armed with all of the `album uris`, I pulled the track info for each album.
 ```r
 get_tracks <- function(artist_info, album_info) {
     
-    # You'll have to set up a dev account with Spotify here:
+    # You'll have to set up a dev account with Spotify here: https://developer.spotify.com/my-applications/#!/applications
     client_id <- 'xxxxxxxxxxxxxxxxxx'
     client_secret <- 'xxxxxxxxxxxxxxxxxx'
     access_token <- POST('https://accounts.spotify.com/api/token',
