@@ -4,7 +4,7 @@ title: fitteR happieR
 subtitle: Finding the most depressing Radiohead song with R, using the Spotify and Genius Lyrics APIs
 bigimg: /img/ifwesmilecanwegohd.jpg
 ---
-Radiohead has been my favorite band for several years, so I am used to people politely suggesting that I play something "less depressing". Much of Radiohead's music is undeniably sad, and this post catalogs my journey to quantify that sadness, including a data-driven determination of their single most depressing song.
+Radiohead has been my favorite band for several years, so I am used to people politely suggesting that I play something "less depressing". Much of Radiohead's music is undeniably sad, and this post catalogs my journey to quantify that sadness, concluding in a data-driven determination of their most depressing song.
 
 ## Getting Data
 Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} provides detailed audio statistics for each song in their library. One of these metrics, "valence", measures a song's positivity. From the offical API documentation:
@@ -30,10 +30,13 @@ str(track_df)
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
 
 ```r
+library(tidyverse)
+
+
 sound_df %>% 
+    select(track_name, valence) %>%
     arrange(valence) %>% 
-    slice(1:10) %>% 
-    select(track_name, valence)
+    slice(1:10)
 
                          track_name valence
 1               We Suck Young Blood  0.0378
@@ -48,9 +51,9 @@ sound_df %>%
 10    Everything In Its Right Place  0.0585
 ```
 
-Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to bring in additional metrics. 
+Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to factor in lyrics. 
 
-While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the included NRC lexicon, which is based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
+While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
 To quantify sad lyrics, I calculated the share of "sad" words per song. While the case could be made for only including unique words, I would argue that the overall sadness of a song is influenced by repetition - repeating a sad lyric can multiply its emotional effect. Furthermore, valence analyzes the sounds of the entire song, necessarily including repetitive hooks and choruses.
 
@@ -58,8 +61,7 @@ To quantify sad lyrics, I calculated the share of "sad" words per song. While th
 library(tidytext)
 
 nrc <- sentiments %>% 
-    filter(lexicon == 'nrc',
-           sentiment == 'sadness') %>% 
+    filter(lexicon == 'nrc', sentiment == 'sadness') %>% 
     select(word) %>% 
     mutate(sad = T)
 
@@ -68,7 +70,7 @@ track_df <- track_df %>%
     left_join(nrc, by = 'word') %>%
     group_by(track_name, album_name, valence, duration_ms, album_img) %>% 
     summarise(word_count = n(),
-              pct_sad = sum(sad, na.rm = T) / word_count) %>% 
+              pct_sad = sum(sad, na.rm = T) / n()) %>% 
     ungroup
 
 arrange(track_sent, -pct_sad)
@@ -87,10 +89,10 @@ arrange(track_sent, -pct_sad)
 10                 Let Down        161 0.07453416
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! Next, I combined lyrical sentiment with valence.
+So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! To combine lyrical and musical sadness, I turned to a fellow R Blogger's analysis.
 
 ## Lyrical Density
-In the strangest coincidence, it turns out that a fellow R Blogger previously came up with a concept of "lyrical density" in their [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} of none other than Radiohead! Lyrical density is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
+In the strangest coincidence, it turns out that someone else previously conducted an [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} in R of Radiohead lyrics! They considered the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
 Using track duration and word count, I calculated lyrical density for each track. To create my final measure of song sadness, I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
 
@@ -133,6 +135,7 @@ To see how sentiment evoloved across all nine albums, I calculated the average s
 
 ```r
 library(RColorBrewer)
+library(highcharter)
 
 plot_df <- track_df %>% 
     rowwise %>% 
@@ -184,6 +187,9 @@ The Spotify Web API is well documented, but it's still a pretty involved process
 First, I created a function to search for artist names.
 
 ```r
+library(httr)
+library(stringr)
+
 get_artists <- function(artist_name) {
     
     # Search Spotify API for artist name
@@ -194,7 +200,7 @@ get_artists <- function(artist_name) {
     artists <- map_df(seq_len(length(res)), function(x) {
         list(
             artist_name = res[[x]]$name,
-            artist_uri = gsub('spotify:artist:', '', res[[x]]$uri), # remove meta info from the uri string
+            artist_uri = str_replace(res[[x]]$uri, 'spotify:artist:', ''), # remove meta info from the uri string
             artist_img = ifelse(length(res[[x]]$images) > 0, res[[x]]$images[[1]]$url, NA) # we'll grab this just for fun
         )
     })
@@ -210,6 +216,8 @@ artist_info <- get_artists('radiohead') %>%
 Next, I used the `artist uri` obtained above to search for all of Radiohead's albums.
 
 ```r
+library(lubridate)
+
 get_albums <- function(artist_uri) {
     albums <- GET(paste0('https://api.spotify.com/v1/artists/', artist_uri,'/albums')) %>% content
     
@@ -218,8 +226,8 @@ get_albums <- function(artist_uri) {
         
         # Make sure the album_type is not "single"
         if (tmp$album_type == 'album') {
-            data.frame(album_uri = tmp$uri %>% gsub('spotify:album:', '', .),
-                       album_name = gsub('\'', '', tmp$name),
+            data.frame(album_uri = str_replace(tmp$uri, 'spotify:album:', ''),
+                       album_name = str_replace_all(tmp$name, '\'', ''),
                        album_img = albums$items[[x]]$images[[1]]$url,
                        stringsAsFactors = F) %>%
                 mutate(album_release_date = GET(paste0('https://api.spotify.com/v1/albums/', tmp$uri %>% gsub('spotify:album:', '', .))) %>% content %>% .$release_date, # yep, you need a separate call to on "albums" to get release date.
@@ -293,8 +301,6 @@ track_info <- get_tracks(artist_info, album_info)
 I used the Genius Lyrics API, and while this data proved to be slightly easier to pull, it is still a multi-step process. Similar to with Spotify, you first need to use the `search` call to get the `artist_uri`. 
 
 ```r
-library(rvest)
-
 artist_name <- 'radiohead'
 n_results <- 10
 token <- 'xxxxxxx'
@@ -341,6 +347,8 @@ while (i > 0) {
 From here, I used `rvest` to scrape the "lyrics" elements from the urls provided above.
 
 ```r
+library(rvest)
+
 lyric_scraper <- function(url) {
     read_html(url) %>% 
         html_node('lyrics') %>% 
