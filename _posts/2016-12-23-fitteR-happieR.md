@@ -231,7 +231,7 @@ get_albums <- function(artist_uri) {
                        album_name = str_replace_all(tmp$name, '\'', ''),
                        album_img = albums$items[[x]]$images[[1]]$url,
                        stringsAsFactors = F) %>%
-                mutate(album_release_date = GET(paste0('https://api.spotify.com/v1/albums/', tmp$uri %>% gsub('spotify:album:', '', .))) %>% content %>% .$release_date, # yep, you need a separate call to on "albums" to get release date.
+                mutate(album_release_date = GET(paste0('https://api.spotify.com/v1/albums/', str_replace(tmp$uri, 'spotify:album:', ''))) %>% content %>% .$release_date, # you need a separate call to on "albums" to get release date.
                        album_release_year = ifelse(nchar(album_release_date) == 4, year(as.Date(album_release_date, '%Y')), year(as.Date(album_release_date, '%Y-%m-%d'))) # not all album_release_dates have months, so I created album_release year for sorting
                        )
         } else {
@@ -260,34 +260,35 @@ get_tracks <- function(artist_info, album_info) {
     access_token <- POST('https://accounts.spotify.com/api/token',
                          accept_json(), authenticate(client_id, client_secret),
                          body = list(grant_type='client_credentials'),
-                         encode = 'form') %>% content %>% .$access_token
+                         encode = 'form', httr::config(http_version=2)) %>% content %>% .$access_token
     
     track_info <- map_df(album_info$album_uri, function(x) {
-        tracks <- GET(paste0('https://api.spotify.com/v1/albums/', x, '/tracks')) %>% content %>% .$items
+        tracks <- GET(paste0('https://api.spotify.com/v1/albums/', x, '/tracks')) %>% 
+            content %>% 
+            .$items 
         
-        map_df(1:length(tracks), function(y) {
-            Sys.sleep(.1)
-            tmp <- tracks[y][[1]]
-            res <- GET(paste0('https://api.spotify.com/v1/audio-features/', gsub('spotify:track:', '', tmp$uri)),
-                       query = list(access_token = access_token)) %>% content
-            res$album_uri <- x
-            res$track_uri <- res$id
-            res$album_name <- album_info$album_name[album_info$album_uri == x]
-            res$album_release_date <- album_info$album_release_date[album_info$album_uri == x]
-            res$album_release_year <- album_info$album_release_year[album_info$album_uri == x]
-            res$album_img <- album_info$album_img[album_info$album_uri == x]
-            res$artist_name <- artist_info$artist_name
-            res$artist_img <- artist_info$artist_img
-            res$track_name <- tmp$name
-            res$track_number <- tmp$track_number
-            
-            res <- as.data.frame(res, stringsAsFactors = F) %>% 
-                select(-c(type, id, track_href, analysis_url, uri))
-            
-            return(res)
-        })
+        uris <- map(1:length(tracks), function(z) {
+            gsub('spotify:track:', '', tracks[z][[1]]$uri)
+        }) %>% unlist %>% paste0(collapse=',')
         
+        res <- GET(paste0('https://api.spotify.com/v1/audio-features/?ids=', uris),
+                   query = list(access_token = access_token)) %>% content %>% .$audio_features
+        df <- unlist(res) %>% 
+            matrix(nrow = length(res), byrow = T) %>% 
+            as.data.frame(stringsAsFactors = F)
+        names(df) <- names(res[[1]])
+        df <- df %>% 
+            mutate(album_uri = x,
+                   track_number = row_number()) %>% 
+            rowwise %>% 
+            mutate(track_name = tracks[[track_number]]$name) %>%
+            ungroup %>% 
+            left_join(album_info, by = 'album_uri') %>% 
+            rename(track_uri = id) %>% 
+            select(-c(type, track_href, analysis_url, uri))
+        return(df)
     }) %>%
+        mutate(artist_img = artist_info$artist_img) %>% 
         mutate_at(c('album_uri', 'track_uri', 'album_release_date', 'track_name', 'album_name', 'artist_img'), funs(as.character)) %>%
         mutate_at(c('danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'album_release_year',
                     'instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms', 'time_signature', 'track_number'), funs(as.numeric(gsub('[^0-9.-]+', '', as.character(.))))) # for some reason parse_number() from readr doesn't work here
