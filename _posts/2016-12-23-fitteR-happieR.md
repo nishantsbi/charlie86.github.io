@@ -19,6 +19,7 @@ So valence provides a measure of how sad a song *sounds* from a musical perspect
 Spotify's API is well documented, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify has separate API endpoints for tracks, albums, and artists, each of which needs their own identifying "uri" to access. To start, I created a function to query the `search` endpoint to grab the `artist_uri` for a given artist name.
 
 ```r
+library(tidyverse)
 library(httr)
 library(stringr)
 
@@ -240,9 +241,7 @@ Now onto the analysis!
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
 
 ```r
-library(tidyverse)
-
-sound_df %>% 
+track_df %>% 
     select(track_name, valence) %>%
     arrange(valence) %>% 
     slice(1:10)
@@ -361,7 +360,7 @@ avg_line <- plot_df %>%
               tooltip = paste0('<a style = "margin-right:', nchar(album_name) * 10, 'px">',
                                '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                                '<b>Album:</b> ', album_name,
-                               '<br><b>Average Track Sentiment Score:</b> ', round(avg, 4),
+                               '<br><b>Average Sentiment Score:</b> ', round(avg, 4),
                                '</a>'))
 plot_track_df <- plot_df %>% 
     mutate(tooltip = paste0(tooltip, '<br><b>Sentiment Score:</b> ', sentiment_score, '</a>'),
