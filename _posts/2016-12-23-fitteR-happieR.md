@@ -454,7 +454,6 @@ album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
 album_chart
 ```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
-
 Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the saddest average sentiment score. This is driven largely by the fact that its finale, "True Love Waits", was the saddest song overall - exclude it, and "Amnesiac" takes the cake. It's also apparent that "A Moon Shaped Pool" broke the trend of increased average sentiment beginning with 2003's "Hail to the Thief".
 
 This was a really fun dataset to work with, and there are plenty of other interesting things to explore here (artist comparisons, within album sentiment, additional song features, etc.). Thanks for reading, and I'm sure I'll revisit this soon!
