@@ -95,15 +95,14 @@ str(album_info)
 
 # Filter out remixes and EPs
 non_studio_albums <- c('TKOL RMX 1234567', 'In Rainbows Disk 2', 'Com Lag: 2+2=5', 'I Might Be Wrong')
-album_info <- album_info %>% filter(!album_name %in% non_studio_albums)
+album_info <- filter(album_info, !album_name %in% non_studio_albums)
 ```
 
-Armed with all of the `album uris`, I pulled the track info for each album.
+Armed with all of the `album uris`, I pulled the track info for each album. For this step, you'll need to set up a dev account with Spotify [here](https://developer.spotify.com/my-applications/#!/applications){:target="_blank"}
 
 ```r
 get_tracks <- function(artist_info, album_info) {
     
-    # You'll have to set up a dev account with Spotify here: https://developer.spotify.com/my-applications/#!/applications
     client_id <- 'xxxxxxxxxxxxxxxxxx'
     client_secret <- 'xxxxxxxxxxxxxxxxxx'
     access_token <- POST('https://accounts.spotify.com/api/token',
@@ -177,7 +176,7 @@ Note that this returns more fields than necessary for this particular analysis, 
 
 ### Genius Lyrics API
 
-While this data proved to be slightly easier to pull, it was still a multi-step process. Similar to with Spotify, I first used the `search` API call to get the `artist_id`. 
+While this data proved to be slightly easier to pull, it was still a multi-step process. Similar to with Spotify, I first used the `search` API call to get the `artist_id`. Go [here](https://genius.com/signup_or_login){:target = "_blank"} to set up a dev account to get an API token.
 
 ```r
 token <- 'xxxxxxxxxxxxxxxxxxxx'
@@ -262,7 +261,7 @@ lyric_scraper <- function(url) {
 genius_df <- map_df(1:length(track_lyric_urls), function(x) {
     lyrics <- lyric_scraper(track_lyric_urls[[x]]$url)
     # strip out non-lyric text and extra spaces
-    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit:]]|[[:punct:]]', '')
+    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit:]]', '')
     lyrics <- str_replace_all(lyrics, '\\n', ' ')
     lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
     lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
@@ -289,21 +288,25 @@ genius_df$track_name[genius_df$track_name == 'A Punchup at a Wedding'] <- 'A Pun
 genius_df$track_name[genius_df$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
 genius_df$track_name[genius_df$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
 
+genius_df <- genius_df %>% 
+    mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', ''))) %>% 
+    select(-track_name)
+
 track_df <- spotify_df %>%
-  mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', ''))) %>%
-  left_join(genius_df %>% mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', '')), by = 'track_name_join')) %>%
-  select(track_name, valence, duration_ms, lyrics, album_name, album_release_year, album_img)
+    mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', ''))) %>%
+    left_join(genius_df, by = 'track_name_join') %>%
+    select(track_name, valence, duration_ms, lyrics, album_name, album_release_year, album_img)
 
 str(track_df)
 
-'data.frame': 101 obs. of  7 variables:
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':   102 obs. of  7 variables:
  $ track_name        : chr  "You" "Creep" "How Do You?" "Stop Whispering" ...
  $ valence           : num  0.305 0.096 0.264 0.279 0.419 0.544 0.258 0.399 0.278 0.269 ...
  $ duration_ms       : num  208667 238640 132173 325627 161533 ...
- $ lyrics            : chr  "You are The sun and moon And stars are you And I could never ..."
+ $ lyrics            : chr  "You are The sun and moon And stars are you And I could  ... "
  $ album_name        : chr  "Pablo Honey" "Pablo Honey" "Pablo Honey" "Pablo Honey" ...
  $ album_release_year: num  1993 1993 1993 1993 1993 ...
- $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b56ad ... "
+ $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b56ad8820" ...
 ```
 Now onto the analysis!
 
