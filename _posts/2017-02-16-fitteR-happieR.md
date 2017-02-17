@@ -50,7 +50,7 @@ Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	2 obs. of  3 variables:
  $ artist_img : chr  "https://i.scdn.co/image/afcd616e1ef2d2786f47b3b4a8a6aeea24a72adc"
 
 # Filter out other artist matches
-artist_info = artist_info %>% 
+artist_info <- artist_info %>% 
     filter(artist_name == 'Radiohead')
 ```
 
@@ -98,7 +98,7 @@ non_studio_albums <- c('TKOL RMX 1234567', 'In Rainbows Disk 2', 'Com Lag: 2+2=5
 album_info <- filter(album_info, !album_name %in% non_studio_albums)
 ```
 
-Armed with all of the `album uris`, I pulled the track info for each album. For this step, you'll need to set up a dev account with Spotify [here](https://developer.spotify.com/my-applications/#!/applications){:target="_blank"}
+Armed with all of the `album uris`, I pulled the track info for each album. For this step, you'll need to set up a dev account with Spotify [here](https://developer.spotify.com/my-applications/#!/applications){:target="_blank"}.
 
 ```r
 get_tracks <- function(artist_info, album_info) {
@@ -176,7 +176,7 @@ Note that this returns more fields than necessary for this particular analysis, 
 
 ### Genius Lyrics API
 
-While this data proved to be slightly easier to pull, it was still a multi-step process. Similar to with Spotify, I first used the `search` API call to get the `artist_id`. Go [here](https://genius.com/signup_or_login){:target = "_blank"} to set up a dev account to get an API token.
+While this data proved to be slightly easier to pull, it was still a multi-step process. Similar to with Spotify, I first used the `search` API call to get the `artist_id`. Go [here](https://genius.com/signup_or_login){:target="_blank"} to set up a dev account to get an API token.
 
 ```r
 token <- 'xxxxxxxxxxxxxxxxxxxx'
@@ -315,21 +315,21 @@ Using valence alone, calculating the saddest song is pretty straightforward - th
 
 ```r
 track_df %>% 
-    select(track_name, valence) %>%
+    select(valence, track_name) %>%
     arrange(valence) %>% 
     slice(1:10)
 
-                         track_name valence
-1               We Suck Young Blood  0.0378
-2                   True Love Waits  0.0378
-3                       The Tourist  0.0400
-4         Motion Picture Soundtrack  0.0425
-5                  Sail To The Moon  0.0458
-6                         Videotape  0.0468
-7              Life In a Glasshouse  0.0516
-8   Tinker Tailor Soldier Sailor...  0.0517
-9                       The Numbers  0.0545
-10    Everything In Its Right Place  0.0585
+    valence                      track_name
+1    0.0378             We Suck Young Blood
+2    0.0378                 True Love Waits
+3    0.0400                     The Tourist
+4    0.0425       Motion Picture Soundtrack
+5    0.0458                Sail To The Moon
+6    0.0468                       Videotape
+7    0.0516            Life In a Glasshouse
+8    0.0517 Tinker Tailor Soldier Sailor...
+9    0.0545                     The Numbers
+10   0.0585   Everything In Its Right Place
 ```
 
 Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie here, each with a valence of 0.0378, further illustrating the need to factor in lyrics. 
@@ -350,26 +350,27 @@ sent_df <- track_df %>%
     unnest_tokens(word, lyrics) %>%
     left_join(sad_words, by = 'word') %>%
     group_by(track_name) %>% 
-    summarise(pct_sad = sum(sad, na.rm = T) / n(),
+    summarise(pct_sad = round(sum(sad, na.rm = T) / n(), 4),
               word_count = n()) %>% 
     ungroup
 
 sent_df %>% 
+    select(pct_sad, track_name) %>%
     arrange(-pct_sad) %>% 
     head(10)
 
-                   track_name    pct_sad word_count
-                        <chr>      <dbl>      <int>
-1             True Love Waits 0.16129032         62
-2   Packt Like Sardines in... 0.12790698        172
-3                High And Dry 0.10000000        200
-4     Exit Music (For a Film) 0.09433962        106
-5           Give Up The Ghost 0.08947368        190
-6                  Backdrifts 0.08904110        146
-7                    Let Down 0.07453416        161
-8                   Identikit 0.06691450        269
-9                Karma Police 0.06293706        143
-10  Motion Picture Soundtrack 0.05714286         70
+    pct_sad                track_name    
+      <dbl>                     <chr>   
+1    0.1613           True Love Waits
+2    0.1279 Packt Like Sardines in...
+3    0.1000              High And Dry
+4    0.0943   Exit Music (For a Film)
+5    0.0895         Give Up The Ghost
+6    0.0890                Backdrifts
+7    0.0745                  Let Down
+8    0.0669                 Identikit
+9    0.0629              Karma Police
+10   0.0571 Motion Picture Soundtrack
 
 ```
 
@@ -396,22 +397,22 @@ track_df <- track_df %>%
            sentiment_score = round(rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2, to = c(1, 100)), 2)) 
 
 track_df %>%
-    select(track_name, sentiment_score) %>%
+    select(sentiment_score, track_name) %>%
 	arrange(sentiment_score) %>%
 	head(10)
 
-                         track_name sentiment_score
-                              <chr>           <dbl>
-1                   True Love Waits         1.00000
-2         Motion Picture Soundtrack        13.21053
-3               We Suck Young Blood        15.90489
-4                      Pyramid Song        16.88393
-5                         Videotape        17.40243
-6                 Give Up The Ghost        17.48944
-7  Tinker Tailor Soldier Sailor ...        17.80405
-8                   Dollars & Cents        18.08028
-9                          Let Down        18.22576
-10             Life In a Glasshouse        18.74126
+   sentiment_score                track_name
+             <dbl>                     <chr>
+1             1.00           True Love Waits
+2            13.21 Motion Picture Soundtrack
+3            15.90       We Suck Young Blood
+4            16.88              Pyramid Song
+5            17.40                 Videotape
+6            17.49         Give Up The Ghost
+7            17.80 Tinker Tailor Soldier ...
+8            18.08           Dollars & Cents
+9            18.23                  Let Down
+10           18.74      Life In a Glasshouse
 ```
 
 As expected, "True Love Waits" is officially the single most depressing Radiohead song to date. To see how sentiment evoloved across all nine albums, I calculated the average sentiment score per album and plotted each song by album release date. To spice up the plot a bit, I created a custom tooltip incorporating the `album_img` from Spotify.
