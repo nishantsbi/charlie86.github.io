@@ -388,11 +388,11 @@ I also rescaled the metric to fit within 1 and 100, so that the saddest song had
 library(scales)
 
 track_df <- track_df %>% 
+    left_join(sent_df, by = 'track_name') %>% 
+    mutate_at(c('pct_sad', 'word_count'), funs(ifelse(is.na(.), 0, .))) %>% 
     mutate(lyrical_density = word_count / duration_ms * 1000,
-           sentimentScore = rescale(1 - ((1 - valence) + (pctSad * (1 + lyricalDensity))) / 2, to = c(1, 100))) 
-```
+           sentiment_score = round(rescale(1 - ((1 - valence) + (pct_sad * (1 + lyrical_density))) / 2, to = c(1, 100)), 2)) 
 
-```r
 track_df %>%
     select(track_name, sentiment_score) %>%
 	arrange(sentiment_score) %>%
