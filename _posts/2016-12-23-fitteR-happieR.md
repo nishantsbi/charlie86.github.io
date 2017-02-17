@@ -40,9 +40,17 @@ get_artists <- function(artist_name) {
     
     return(artists)
 }
+artist_info <- get_artists('radiohead')
+
+str(artist_info)
+
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	2 obs. of  3 variables:
+ $ artist_name: chr  "Radiohead" "Radiohead Tribute Band"
+ $ artist_uri : chr  "4Z8W4fKeB5YxbusRsdQVPb" "0ADkBHZhR2cVfANgK5gHQO"
+ $ artist_img : chr  "https://i.scdn.co/image/afcd616e1ef2d2786f47b3b4a8a6aeea24a72adc"
 
 # Filter out other artist matches
-artist_info <- get_artists('radiohead') %>% 
+artist_info = artist_info %>% 
     filter(artist_name == 'Radiohead')
 ```
 
@@ -75,6 +83,15 @@ get_albums <- function(artist_uri) {
 }
 
 album_info <- get_albums(artist_info$artist_uri)
+
+str(album_info)
+
+'data.frame':	13 obs. of  5 variables:
+ $ album_uri         : chr  "6400dnyeDyD2mIFHfkwHXN" "500FEaUzn8lN9zWFyZG5C2"
+ $ album_name        : chr  "Pablo Honey" "The Bends" "OK Computer" "Kid A" ...
+ $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c08 ... " 
+ $ album_release_date: chr  "1993-02-22" "1995-03-28" "1997-05-28" ...
+ $ album_release_year: num  1993 1995 1997 2000 2001 ...
 
 # Filter out remixes and EPs
 non_studio_albums <- c('TKOL RMX 1234567', 'In Rainbows Disk 2', 'Com Lag: 2+2=5', 'I Might Be Wrong')
@@ -127,9 +144,34 @@ get_tracks <- function(artist_info, album_info) {
     return(track_info)
 }
 
-track_info <- get_tracks(artist_info, album_info)
+spotify_df <- get_tracks(artist_info, album_info)
 
-str(track_info)
+str(spotify_df)
+
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame': 101 obs. of  22 variables:
+ $ danceability      : num  0.223 0.515 0.185 0.212 0.364 0.294 0.256 0.384 0.25 0.284 ...
+ $ energy            : num  0.706 0.43 0.964 0.696 0.37 0.813 0.906 0.717 0.62 0.825 ...
+ $ key               : num  9 7 9 2 7 4 2 6 0 7 ...
+ $ loudness          : num  -12.01 -9.94 -8.32 -10.06 -14.13 ...
+ $ mode              : num  1 1 1 1 1 0 1 1 1 1 ...
+ $ speechiness       : num  0.0581 0.0369 0.084 0.0472 0.0331 0.0547 0.0548 0.0339 0.0611 0.0595 ...
+ $ acousticness      : num  0.000945 0.0102 0.000659 0.000849 0.704 0.000101 NA 0.00281 0.000849 0.00968 ...
+ $ instrumentalness  : num  0.0068 0.000141 0.879 0.0165 NA 0.000756 0.366 0.569 0.0848 0.3 ...
+ $ liveness          : num  0.109 0.129 0.107 0.129 0.0883 0.333 0.322 0.187 0.175 0.118 ...
+ $ valence           : num  0.305 0.096 0.264 0.279 0.419 0.544 0.258 0.399 0.278 0.269 ...
+ $ tempo             : num  112.9 91.8 147.4 122.4 103.4 ...
+ $ track_uri         : chr  "1MyqLTRhgyWPw7v107BEuI" "6b2oQwSGFkzsMtQruIWm2p" "71wIOoaoVMUwskK5yCXZL4" ...
+ $ duration_ms       : num  208667 238640 132173 325627 161533 ...
+ $ time_signature    : num  3 4 4 4 4 4 4 4 4 4 ...
+ $ album_uri         : chr  "6400dnyeDyD2mIFHfkwHXN" "6400dnyeDyD2mIFHfkwHXN" "6400dnyeDyD2mIFHfkwHXN" ...
+ $ track_number      : num  1 2 3 4 5 6 7 8 9 10 ...
+ $ track_name        : chr  "You" "Creep" "How Do You?" "Stop Whispering" ...
+ $ album_name        : chr  "Pablo Honey" "Pablo Honey" "Pablo Honey" "Pablo Honey" ...
+ $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b56ad8820" ...
+ $ album_release_date: chr  "1993-02-22" "1993-02-22" "1993-02-22" "1993-02-22" ...
+ $ album_release_year: num  1993 1993 1993 1993 1993 ...
+ $ artist_img        : chr  "https://i.scdn.co/image/afcd616e1ef2d2786f47b3b4a8a6aeea24a72adc" ...
+
 ```
 Note that this returns more fields than necessary for this particular analysis, but I figured it was worth keeping those extra metrics in the function for future use.
 
@@ -138,9 +180,7 @@ Note that this returns more fields than necessary for this particular analysis, 
 While this data proved to be slightly easier to pull, it was still a multi-step process. Similar to with Spotify, I first used the `search` API call to get the `artist_id`. 
 
 ```r
-artist_name <- 'radiohead'
-n_results <- 10
-token <- 'xxxxxxx'
+token <- 'xxxxxxxxxxxxxxxxxxxx'
 
 genius_get_artists <- function(artist_name, n_results = 10) {
     baseURL <- 'https://api.genius.com/search?q=' 
@@ -160,6 +200,12 @@ genius_get_artists <- function(artist_name, n_results = 10) {
 }
 
 genius_artists <- genius_get_artists('radiohead')
+genius_artists
+
+# A tibble: 1 × 2
+  artist_id artist_name
+      <int>       <chr>
+1       604   Radiohead
 
 ```
 
@@ -180,6 +226,28 @@ while (i > 0) {
         break
     }
 }
+
+length(track_lyric_urls)
+
+[1] 219
+
+summary(track_lyric_urls[[1]])
+
+                             Length Class  Mode     
+annotation_count             1      -none- numeric  
+api_path                     1      -none- character
+full_title                   1      -none- character
+header_image_thumbnail_url   1      -none- character
+header_image_url             1      -none- character
+id                           1      -none- numeric  
+lyrics_owner_id              1      -none- numeric  
+path                         1      -none- character
+pyongs_count                 1      -none- numeric  
+song_art_image_thumbnail_url 1      -none- character
+stats                        3      -none- list     
+title                        1      -none- character
+url                          1      -none- character
+primary_artist               8      -none- list  
 ```
 From here, I used `rvest` to scrape the "lyrics" elements from the urls provided above.
 
@@ -192,10 +260,10 @@ lyric_scraper <- function(url) {
         html_text
 }
 
-lyrics_df <- map_df(1:length(track_lyric_urls), function(x) {
+genius_df <- map_df(1:length(track_lyric_urls), function(x) {
     lyrics <- lyric_scraper(track_lyric_urls[[x]]$url)
     # strip out non-lyric text and extra spaces
-    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit::]]|[[:punct:]]', '')
+    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit:]]|[[:punct:]]', '')
     lyrics <- str_replace_all(lyrics, '\\n', ' ')
     lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
     lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
@@ -204,25 +272,28 @@ lyrics_df <- map_df(1:length(track_lyric_urls), function(x) {
         track_name = track_lyric_urls[[x]]$title,
         lyrics = lyrics
     )
-    print(tots$track_name)
     return(tots)
 })
 
-str(lyrics_df)
+str(genius_df)
+
+Classes ‘tbl_df’, ‘tbl’ and 'data.frame':   219 obs. of  2 variables:
+ $ track_name: chr  "15 Step" "2 + 2 = 5" "4 Minute Warning" "Airbag" ...
+ $ lyrics    : chr  "How come I end up where I started How come I end ... "
 ```
-Finally, I left joined `lyrics_df` onto `sound_df` by `track_name` after bit of name-standardizing between Spotify and Genius.
+After bit of name-standardizing between Spotify and Genius, I left joined `genius_df` onto `spotify_df` by `track_name` (The album info will come in handy later).
 
 ```r
-lyrics_df$track_name[lyrics_df$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
-lyrics_df$track_name[lyrics_df$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
-lyrics_df$track_name[lyrics_df$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
-lyrics_df$track_name[lyrics_df$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
-lyrics_df$track_name[lyrics_df$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
+genius_df$track_name[genius_df$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
+genius_df$track_name[genius_df$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
+genius_df$track_name[genius_df$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
+genius_df$track_name[genius_df$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
+genius_df$track_name[genius_df$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
 
-track_df <- sound_df %>%
+track_df <- spotify_df %>%
   mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', ''))) %>%
-  left_join(lyrics_df %>% mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', '')), by = 'track_name_join')) %>%
-  select(track_name, album_name, album_release_year, valence, duration_ms, lyrics, album_img)
+  left_join(genius_df %>% mutate(track_name_join = tolower(str_replace(track_name, '[[:punct:]]', '')), by = 'track_name_join')) %>%
+  select(track_name, valence, duration_ms, lyrics, album_name, album_release_year, album_img)
 
 str(track_df)
 
@@ -233,7 +304,7 @@ str(track_df)
  $ lyrics            : chr  "You are The sun and moon And stars are you And I could never ..."
  $ album_name        : chr  "Pablo Honey" "Pablo Honey" "Pablo Honey" "Pablo Honey" ...
  $ album_release_year: num  1993 1993 1993 1993 1993 ...
- $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b56ad...
+ $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b56ad ... "
 ```
 Now onto the analysis!
 
@@ -268,41 +339,46 @@ To quantify sad lyrics, I calculated the share of "sad" words per song. While th
 ```r
 library(tidytext)
 
-nrc <- sentiments %>% 
+sad_words <- sentiments %>% 
     filter(lexicon == 'nrc', sentiment == 'sadness') %>% 
     select(word) %>% 
     mutate(sad = T)
 
-track_df <- track_df %>% 
+sent_df <- track_df %>% 
     unnest_tokens(word, lyrics) %>%
-    left_join(nrc, by = 'word') %>%
-    group_by(track_name, album_name, valence, duration_ms, album_img) %>% 
+    left_join(sad_words, by = 'word') %>%
+    group_by(track_name) %>% 
     summarise(pct_sad = sum(sad, na.rm = T) / n(),
               word_count = n()) %>% 
     ungroup
 
-arrange(track_sent, -pct_sad)
+sent_df %>% 
+    arrange(-pct_sad) %>% 
+    head(10)
 
-                 track_name   pct_sad  word_count 
-                      <chr>  <dbl>          <int>    
-1         Give Up The Ghost 0.17368421        190
-2           True Love Waits 0.16129032         62
-3    Packt Like Sardines... 0.12790698        172
-4              High and Dry 0.10000000        200
-5                       Fog 0.09589041         73
-6    How I Made My Millions 0.09523810         42
-7   Exit Music (For a Film) 0.09433962        106
-8                 The Thief 0.09000000        200
-9                Backdrifts 0.08904110        146
-10                 Let Down 0.07453416        161
+                         track_name sentiment_score
+                              <chr>           <dbl>
+1                   True Love Waits         1.00000
+2         Motion Picture Soundtrack        13.21053
+3               We Suck Young Blood        15.90489
+4                      Pyramid Song        16.88393
+5                         Videotape        17.40243
+6                 Give Up The Ghost        17.48944
+7  Tinker Tailor Soldier Sailor ...        17.80405
+8                   Dollars & Cents        18.08028
+9                          Let Down        18.22576
+10             Life In a Glasshouse        18.74126
+
 ```
 
-So by the percentage of total words that were sad, "Give Up The Ghost" wins, with over 17% of its lyrics containing sad words, but "True Love Waits" is a close second! 
+By the percentage of total words that were sad, "True Love Waits" wins, with over 16% of its lyrics containing sad words. Specifically, the algorithm picked out the words "drown", "killing", "crazy", "haunted", and "leave" - the last of which was repeated six times in the chorus ("Just don't leave. Don't leave").
+
+Given that "True Love Waits" also tied for lowest valence, we techincally already have our winner, but I still went ahead and calculated the weighted "sentiment score" to see how the rest of the tracks stacked up.
 
 ## Lyrical Density
 To combine lyrical and musical sadness, I turned to a fellow R Blogger's [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"}, which coincidentally also dealt with Radiohead lyrics. They explored the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis.
 
-Using track duration and word count, I calculated lyrical density for each track. To create my final "sentiment score", I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
+Using track duration and word count, I calculated lyrical density for each track. To create the final "sentiment score", I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
 
 <img src="/img/posts/fitterhappier/sentimentscore.png">
 
@@ -316,29 +392,27 @@ track_df <- track_df %>%
            sentimentScore = rescale(1 - ((1 - valence) + (pctSad * (1 + lyricalDensity))) / 2, to = c(1, 100))) 
 ```
 
-Drum Roll...
-
 ```r
 track_df %>%
+    select(track_name, sentiment_score) %>%
 	arrange(sentiment_score) %>%
 	head(10)
 
                          track_name sentiment_score
-1                   True Love Waits          1.0000
-2                 Give Up The Ghost          3.7846
-3         Motion Picture Soundtrack         13.2105
-4               We Suck Young Blood         16.0205
-5                      Pyramid Song         16.8839
-6                         Videotape         17.4024
-7   Tinker Tailor Soldier Sailor...         17.8040
-8                   Dollars & Cents         18.0803
-9                          Let Down         18.2258
-10             Life In a Glasshouse         18.7413
+                              <chr>           <dbl>
+1                   True Love Waits         1.00000
+2         Motion Picture Soundtrack        13.21053
+3               We Suck Young Blood        15.90489
+4                      Pyramid Song        16.88393
+5                         Videotape        17.40243
+6                 Give Up The Ghost        17.48944
+7  Tinker Tailor Soldier Sailor ...        17.80405
+8                   Dollars & Cents        18.08028
+9                          Let Down        18.22576
+10             Life In a Glasshouse        18.74126
 ```
 
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Along with tieing for the lowest valence, it had the second highest percentage of sad lyrics, at 16%. Specifically, the algorithm picked out the words "drown", "killing", "crazy", "haunted", and "leave" - the last of which was repeated six times in the chorus ("Just don't leave. Don't leave"). 
-
-To see how sentiment evoloved across all nine albums, I calculated the average sentiment score per album and plotted each song by album release date. To spice up the plot a bit, I created a custom tooltip incorporating the `album_img` provided by Spotify.
+As expected, "True Love Waits" is officially the single most depressing Radiohead song to date. To see how sentiment evoloved across all nine albums, I calculated the average sentiment score per album and plotted each song by album release date. To spice up the plot a bit, I created a custom tooltip incorporating the `album_img` from Spotify.
 
 ```r
 library(RColorBrewer)
@@ -346,35 +420,39 @@ library(highcharter)
 
 plot_df <- track_df %>% 
     rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(nchar(track_name), nchar(album_name)) * 9, 'px">',
+    mutate(tooltip = paste0('<a style = "margin-right:', max(max(nchar(track_name), nchar(album_name)) * 6, 50), 'px">',
                             '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                             '<b>Album:</b> ', album_name,
                             '<br><b>Track:</b> ', track_name)) %>% 
     ungroup
+
+
+
+
 avg_line <- plot_df %>% 
     group_by(album_release_year, album_name, album_img) %>% 
     summarise(avg = mean(sentiment_score)) %>% 
     ungroup %>% 
     transmute(x = as.numeric(as.factor(album_release_year)), 
               y = avg,
-              tooltip = paste0('<a style = "margin-right:', nchar(album_name) * 10, 'px">',
+              tooltip = paste0('<a style = "margin-right:50px">',
                                '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                                '<b>Album:</b> ', album_name,
-                               '<br><b>Average Sentiment Score:</b> ', round(avg, 4),
+                               '<br><b>Average Sentiment Score:</b> ', round(avg, 2),
                                '</a>'))
 plot_track_df <- plot_df %>% 
     mutate(tooltip = paste0(tooltip, '<br><b>Sentiment Score:</b> ', sentiment_score, '</a>'),
            album_number = as.numeric(as.factor(album_release_year))) %>% 
     ungroup
 
-album_chart <- hchart(dep_df, x = as.numeric(as.factor(album_release_year)), y = sentiment_score, group = album_name, type = 'scatter') %>% 
+album_chart <- hchart(plot_track_df, x = as.numeric(as.factor(album_release_year)), y = sentiment_score, group = album_name, type = 'scatter') %>% 
     hc_add_series_df(data = avg_line, type = 'line') %>%
     hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
-    hc_colors(c(brewer.pal(n_distinct(track_df$album_name), 'Set3'), 'black')) %>% 
-    hc_xAxis(title = list(enabled = F), labels = list(enabled = F)) %>% 
+    hc_colors(c(sample(brewer.pal(n_distinct(track_df$album_name), 'Paired')), 'black')) %>% 
+    hc_xAxis(title = list(text = 'Album'), labels = list(enabled = F)) %>% 
     hc_yAxis(max = 100, title = list(text = 'Sentiment Score')) %>% 
     hc_title(text = 'Data Driven Depression') %>% 
-    hc_subtitle(text = 'Radiohead sentiment by album') %>% 
+    hc_subtitle(text = 'Radiohead song sentiment by album') %>% 
     hc_add_theme(hc_theme_smpl())
 album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
 album_chart
