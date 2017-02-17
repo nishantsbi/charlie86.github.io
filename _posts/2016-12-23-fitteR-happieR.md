@@ -355,18 +355,18 @@ sent_df %>%
     arrange(-pct_sad) %>% 
     head(10)
 
-                         track_name sentiment_score
-                              <chr>           <dbl>
-1                   True Love Waits         1.00000
-2         Motion Picture Soundtrack        13.21053
-3               We Suck Young Blood        15.90489
-4                      Pyramid Song        16.88393
-5                         Videotape        17.40243
-6                 Give Up The Ghost        17.48944
-7  Tinker Tailor Soldier Sailor ...        17.80405
-8                   Dollars & Cents        18.08028
-9                          Let Down        18.22576
-10             Life In a Glasshouse        18.74126
+                   track_name    pct_sad word_count
+                        <chr>      <dbl>      <int>
+1             True Love Waits 0.16129032         62
+2   Packt Like Sardines in... 0.12790698        172
+3                High And Dry 0.10000000        200
+4     Exit Music (For a Film) 0.09433962        106
+5           Give Up The Ghost 0.08947368        190
+6                  Backdrifts 0.08904110        146
+7                    Let Down 0.07453416        161
+8                   Identikit 0.06691450        269
+9                Karma Police 0.06293706        143
+10  Motion Picture Soundtrack 0.05714286         70
 
 ```
 
