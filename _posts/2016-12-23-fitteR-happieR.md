@@ -228,7 +228,6 @@ while (i > 0) {
 }
 
 length(track_lyric_urls)
-
 [1] 219
 
 summary(track_lyric_urls[[1]])
@@ -420,14 +419,11 @@ library(highcharter)
 
 plot_df <- track_df %>% 
     rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(max(nchar(track_name), nchar(album_name)) * 6, 50), 'px">',
+    mutate(tooltip = paste0('<a style = "margin-right:', max(max(nchar(track_name), nchar(album_name)) * 6, 50), 'px">', # dynamic sizing
                             '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                             '<b>Album:</b> ', album_name,
                             '<br><b>Track:</b> ', track_name)) %>% 
     ungroup
-
-
-
 
 avg_line <- plot_df %>% 
     group_by(album_release_year, album_name, album_img) %>% 
