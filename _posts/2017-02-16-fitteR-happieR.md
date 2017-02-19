@@ -421,7 +421,7 @@ library(highcharter)
 
 plot_df <- track_df %>% 
     rowwise %>% 
-    mutate(tooltip = paste0('<a style = "margin-right:', max(max(nchar(track_name), nchar(album_name)) * 6, 50), 'px">', # dynamic sizing
+    mutate(tooltip = paste0('<a style = "margin-right:', max(max(nchar(track_name), nchar(album_name)) * 7, 55), 'px">', # dynamic sizing
                             '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                             '<b>Album:</b> ', album_name,
                             '<br><b>Track:</b> ', track_name)) %>% 
@@ -433,7 +433,7 @@ avg_line <- plot_df %>%
     ungroup %>% 
     transmute(x = as.numeric(as.factor(album_release_year)), 
               y = avg,
-              tooltip = paste0('<a style = "margin-right:50px">',
+              tooltip = paste0('<a style = "margin-right:55px">',
                                '<img src=', album_img, ' height="50" style="float:left;margin-right:5px">',
                                '<b>Album:</b> ', album_name,
                                '<br><b>Average Gloom Index:</b> ', round(avg, 2),
