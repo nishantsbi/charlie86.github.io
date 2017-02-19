@@ -456,6 +456,6 @@ album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
 album_chart
 ```
 <iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
-Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits", was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke the trend of relatively less depressing albums - the three preceding albums had the highest average gloom indices of all Radiohead's albums.
+Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits", was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke a trend of relatively less depressing albums since 2003's "Hail to the Thief".
 
 This was a really fun dataset to work with, and there are plenty of other interesting things to explore here (artist comparisons, within album sadness, additional song features, etc.). Thanks for reading!
