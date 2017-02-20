@@ -16,7 +16,7 @@ Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} pr
 
 So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/){:target="_blank"} to pull track-level data. To determine a song's sadness, I calculated a weighted average of valence and lyrical sentiment. But first, I had to get the data.
 
-<a href="#analysis">Bored, skip to the analysis!</a>
+<a href="#analysis">Click here to jump straight to the analysis! (skip API setup and web scraping) </a>
 
 ### Spotify Web API
 
