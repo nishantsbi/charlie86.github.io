@@ -6,8 +6,6 @@ bigimg: /img/ifwesmilecanwegohd.jpg
 ---
 Radiohead has been my favorite band for a while, so I am used to people politely suggesting that I play something "less depressing". Much of Radiohead's music is undeniably sad, and this post catalogs my journey to quantify that sadness, concluding in a data-driven determination of their most depressing song.
 
-<img src="/img/posts/fitterhappier/fitter_happier_gif.gif">
-
 ## Getting Data
 
 Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} provides detailed audio statistics for each song in their library. One of these metrics, "valence", measures a song's positivity. From the offical API documentation:
@@ -462,9 +460,8 @@ album_chart <- hchart(plot_track_df, x = as.numeric(as.factor(album_release_year
 album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
 album_chart
 ```
-<iframe src="/htmlwidgets/fitterhappier/album_chart.html" height="400px"></iframe>
+<a href="/htmlwidgets/fitterhappier/album_chart.html"><img src="/img/posts/fitterhappier/fitter_happier_gif.gif"></a>
 [View plot in new window](/htmlwidgets/fitterhappier/album_chart.html){:target="_blank"}
-
 Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool" boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits", was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke a trend of relatively less depressing albums since 2003's "Hail to the Thief".
 
 This was a really fun dataset to work with, and there are plenty of other interesting things to explore here (artist comparisons, within album sadness, additional song features, etc.). Thanks for reading!
