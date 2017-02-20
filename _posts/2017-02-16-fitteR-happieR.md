@@ -460,7 +460,7 @@ album_chart <- hchart(plot_track_df, x = as.numeric(as.factor(album_release_year
 album_chart$x$hc_opts$series[[10]]$name <- 'Album Averages'
 album_chart
 ```
-<a href="/htmlwidgets/fitterhappier/album_chart.html"><img src="/img/posts/fitterhappier/fitter_happier_gif.gif"></a>
+<a href="/htmlwidgets/fitterhappier/album_chart.html" target="_blank"><img src="/img/posts/fitterhappier/fitter_happier_gif.gif"></a>
 
 [View plot in new window](/htmlwidgets/fitterhappier/album_chart.html){:target="_blank"}
 
