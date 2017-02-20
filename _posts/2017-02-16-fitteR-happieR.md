@@ -16,6 +16,8 @@ Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} pr
 
 So valence provides a measure of how sad a song *sounds* from a musical perspective. Another key component of a song's sentiment is its lyrics, and it just so happens that Genius Lyrics also has an [API](https://docs.genius.com/){:target="_blank"} to pull track-level data. To determine a song's sadness, I calculated a weighted average of valence and lyrical sentiment. But first, I had to get the data.
 
+<a href="#analysis">Bored, skip to the analysis!</a>
+
 ### Spotify Web API
 
 Spotify's API is well documented, but it's still a pretty involved process to grab all songs for a given artist. In short, Spotify has separate API endpoints for tracks, albums, and artists, each of which needs their own identifying "uri" to access. To start, I created a function to query the `search` endpoint to grab the `artist_uri` for a given artist name.
@@ -313,6 +315,7 @@ Classes ‘tbl_df’, ‘tbl’ and 'data.frame':   101 obs. of  8 variables:
  $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b5" ...
 ```
 Now onto the analysis!
+<a name="codeword">
 
 ## Quantifying Sentiment
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
