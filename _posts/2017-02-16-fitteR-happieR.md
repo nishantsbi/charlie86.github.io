@@ -315,7 +315,7 @@ Classes ‘tbl_df’, ‘tbl’ and 'data.frame':   101 obs. of  8 variables:
  $ album_img         : chr  "https://i.scdn.co/image/e17011b2aa33289dfa6c0828a0e40d6b5" ...
 ```
 Now onto the analysis!
-<a name="codeword">
+<a name="analysis">
 
 ## Quantifying Sentiment
 Using valence alone, calculating the saddest song is pretty straightforward - the song with the lowest valence wins.
