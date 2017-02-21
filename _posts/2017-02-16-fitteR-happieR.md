@@ -377,7 +377,7 @@ sent_df %>%
 9   0.1842 A Punch Up At a Wedding
 10  0.1800               Identikit
 ```
-By the percentage of non-stopwords that were sad, "High And Dry" wins, with about 36% of its lyrics containing sad words. Specifically, the algorithm picked out the words "broke", "fall", "hate", "kill", and "leave" - the last of which was repeated 15 times in the chorus ("Don't leave me high, don't leave me dry.")
+By the percentage of non-stopwords that were sad, "High And Dry" wins, with about 36% of its lyrics containing sad words. Specifically, the algorithm picked out the words "broke," "fall," "hate," "kill," and "leave" - the last of which was repeated 15 times in the chorus ("Don't leave me high, don't leave me dry.")
 
 ## Lyrical Density
 To combine lyrical and musical sadness, I turned to a fellow R Blogger's [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"}, which coincidentally also dealt with Radiohead lyrics. They explored the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis. Note that my version of lyrical density is slightly modified as it excludes stopwords.
@@ -419,7 +419,7 @@ track_df %>%
 ```
 We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Rightly so, given that it tied for lowest valence (0.0378) and ranked fourth for highest percentage of sad words (24%). If the numbers still don't convince you, just [listen to it](https://open.spotify.com/track/01ZpFhrMMqKPVCwyqXneVp){:target="_blank"}. 
 
-To see how sadness evoloved across all nine albums, I calculated the average gloom index per album and plotted each song by album release date. To spice up the `highcharter` plot a bit, I created a custom tooltip incorporating the `album_img` from Spotify.
+To see how sadness evolved across all nine albums, I calculated the average gloom index per album and plotted each song by album release date. To spice up the `highcharter` plot a bit, I created a custom tooltip incorporating the `album_img` from Spotify.
 ```r
 library(RColorBrewer)
 library(highcharter)
