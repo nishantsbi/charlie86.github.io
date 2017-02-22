@@ -41,19 +41,19 @@ avatar: "/img/avatar-icon.png"
 # Important: you must keep the "name" parameter, everything else you can remove
 author:
   name: Charlie
-  twitter: https://twitter.com/RCharlie425
-  email: charles.thompson@barcelonagse.eu
+  twitter: RCharlie425
+  email: "charles.thompson@barcelonagse.eu"
   github: charlie86
-  linkedin: https://www.linkedin.com/in/charlie-thompson-a2959388/ 
+  linkedin: "https://www.linkedin.com/in/charlie-thompson-a2959388/"
   # stackoverflow: 
  
 # Select which links to show in the footer
 footer-links-active:
   rss: false
   email: true
-  twitter: false
+  twitter: true
   github: true
-  linkedin: false
+  linkedin: true
   stackoverflow: false
 
 # How to display the link to the website in the footer
