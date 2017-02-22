@@ -51,9 +51,9 @@ author:
 footer-links-active:
   rss: false
   email: true
-  twitter: true
+  twitter: false
   github: true
-  linkedin: true
+  linkedin: false
   stackoverflow: false
 
 # How to display the link to the website in the footer
