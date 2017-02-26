@@ -417,7 +417,7 @@ track_df %>%
 9         15.80 Tinker Tailor Soldier ...
 10        16.03                 Videotape
 ```
-We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Rightly so, given that it tied for lowest valence (0.0378) and ranked fourth for highest percentage of sad words (24%). If the numbers still don't convince you, just [listen to it](https://open.spotify.com/track/01ZpFhrMMqKPVCwyqXneVp){:target="_blank"}. 
+We have a winner! "True Love Waits" is officially the single most depressing Radiohead song to date. Rightly so, given that it tied for lowest valence (0.0378) and ranked fourth for highest percentage of sad words (24%). If the numbers still don't convince you, just [listen to it](https://vimeo.com/170620454){:target="_blank"}. 
 
 To see how sadness evolved across all nine albums, I calculated the average gloom index per album and plotted each song by album release date. To spice up the `highcharter` plot a bit, I created a custom tooltip incorporating the `album_img` from Spotify.
 ```r
