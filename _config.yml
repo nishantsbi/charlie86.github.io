@@ -25,6 +25,7 @@ description: Data science blog
 # List of links in the navigation bar
 navbar-links:
   About Me: "http://rcharlie.com/aboutme/"
+  Read More: "http://rcharlie.com/readmore/"
   # Shiny Server: "http://midnightbarber.net"
   # Resources:
   #   - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
