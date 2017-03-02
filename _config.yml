@@ -24,6 +24,7 @@ description: Data science blog
 
 # List of links in the navigation bar
 navbar-links:
+  Blog: "http://rcharlie.com/"
   About Me / Contact: "http://rcharlie.com/aboutme/"
   Read More: "http://rcharlie.com/readmore/"
   # Shiny Server: "http://midnightbarber.net"
