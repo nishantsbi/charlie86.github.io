@@ -8,7 +8,7 @@ Radiohead has been my favorite band for a while, so I am used to people politely
 
 ## Getting Data
 
-Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} provides detailed audio statistics for each song in their library. One of these metrics, "valence", measures a song's positivity. From the offical API documentation:
+Spotify's [Web API](https://developer.spotify.com/web-api/){:target="_blank"} provides detailed audio statistics for each song in their library. One of these metrics, "valence," measures a song's positivity. From the offical API documentation:
 
 > A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).
 
@@ -261,17 +261,24 @@ lyric_scraper <- function(url) {
 }
 
 genius_df <- map_df(1:length(track_lyric_urls), function(x) {
-    lyrics <- lyric_scraper(track_lyric_urls[[x]]$url)
-    # strip out non-lyric text and extra spaces
-    lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit:]]', '')
-    lyrics <- str_replace_all(lyrics, '\\n', ' ')
-    lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
-    lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
-    lyrics <- tolower(str_trim(lyrics))
+    # add in error handling
+    lyrics <- try(lyric_scraper(track_lyric_urls[[x]]$url))
+    if (class(lyrics) != 'try-error') {
+        # strip out non-lyric text and extra spaces
+        lyrics <- str_replace_all(lyrics, '\\[(Verse [[:digit:]]|Pre-Chorus [[:digit:]]|Hook [[:digit:]]|Chorus|Outro|Verse|Refrain|Hook|Bridge|Intro|Instrumental)\\]|[[:digit:]]|[\\.!?\\(\\)\\[\\],]', '')
+        lyrics <- str_replace_all(lyrics, '\\n', ' ')
+        lyrics <- str_replace_all(lyrics, '([A-Z])', ' \\1')
+        lyrics <- str_replace_all(lyrics, ' {2,}', ' ')
+        lyrics <- tolower(str_trim(lyrics))
+    } else {
+        lyrics <- NA
+    }
+    
     tots <- list(
         track_name = track_lyric_urls[[x]]$title,
         lyrics = lyrics
     )
+    
     return(tots)
 })
 
@@ -285,7 +292,7 @@ After bit of name-standardizing between Spotify and Genius, I left joined `geniu
 
 ```r
 genius_df$track_name[genius_df$track_name == 'Packt Like Sardines in a Crushd Tin Box'] <- 'Packt Like Sardines in a Crushed Tin Box'
-genius_df$track_name[genius_df$track_name == 'Weird Fishes/Arpeggi'] <- 'Weird Fishes/ Arpeggi'
+genius_df$track_name[genius_df$track_name == 'Weird Fishes / Arpeggi'] <- 'Weird Fishes/ Arpeggi'
 genius_df$track_name[genius_df$track_name == 'A Punchup at a Wedding'] <- 'A Punch Up at a Wedding'
 genius_df$track_name[genius_df$track_name == 'Dollars and Cents'] <- 'Dollars & Cents'
 genius_df$track_name[genius_df$track_name == 'Bullet Proof...I Wish I Was'] <- 'Bullet Proof ... I Wish I was'
@@ -341,7 +348,7 @@ Would that it were so simple. "True Love Waits" and "We Suck Young Blood" tie he
 
 While valence serves as an out-of-the box measure of musical sentiment, the emotions behind song lyrics are much more elusive. To find the most depressing song, I used sentiment analysis to pick out words associated with sadness. Specifically, I used `tidytext` and the NRC lexicon, based on a crowd-sourced [project](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm){:target="_blank"} by the National Research Council Canada. This lexicon contains an array of emotions (sadness, joy, anger, surprise, etc.) and the words determined to most likely elicit them.
 
-To quantify sad lyrics, I calculated the share of "sad" words per song, filtering out "stopwords" (e.g. "the", "and", "I").
+To quantify sad lyrics, I calculated the share of "sad" words per song, filtering out "stopwords" (e.g. "the," "and," "I").
 ```r
 library(tidytext)
 
@@ -380,9 +387,9 @@ sent_df %>%
 By the percentage of non-stopwords that were sad, "High And Dry" wins, with about 36% of its lyrics containing sad words. Specifically, the algorithm picked out the words "broke," "fall," "hate," "kill," and "leave" - the last of which was repeated 15 times in the chorus ("Don't leave me high, don't leave me dry.")
 
 ## Lyrical Density
-To combine lyrical and musical sadness, I turned to a fellow R Blogger's [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"}, which coincidentally also dealt with Radiohead lyrics. They explored the concept of "lyrical density", which is, according to their definition - "the number of lyrics per song over the track length". One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis. Note that my version of lyrical density is slightly modified as it excludes stopwords.
+To combine lyrical and musical sadness I turned to an [analysis](https://www.r-bloggers.com/everything-in-its-right-place-visualization-and-content-analysis-of-radiohead-lyrics/){:target="_blank"} by Myles Harrison, a fellow R Blogger, which coincidentally also dealt with Radiohead lyrics. They explored the concept of "lyrical density," which is, according to their definition - "the number of lyrics per song over the track length." One way to interpret this is how "important" lyrics are to a given song, making it the perfect weighting metric for my analysis. Note that my version of lyrical density is slightly modified as it excludes stopwords.
 
-Using track duration and word count, I calculated lyrical density for each track. To create the final "gloom index", I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
+Using track duration and word count, I calculated lyrical density for each track. To create the final "gloom index," I took the average of valence and the percentage of sad words per track, weighted by lyrical density.
 
 <img src="/img/posts/fitterhappier/gloom_index.png">
 
@@ -464,6 +471,9 @@ album_chart
 
 [View plot in new window](/htmlwidgets/fitterhappier/album_chart.html){:target="_blank"}
 
-Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool," boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits," was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke a trend of relatively less depressing albums since 2003's "Hail to the Thief."
+Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool," boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits," was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke a trend of increasingly less depressing albums since 2003's "Hail to the Thief" and directly followed the band's least sad album, "The King of Limbs."
 
 This was a really fun dataset to work with, and there are plenty of other interesting things to explore here (artist comparisons, within album sadness, additional song features, etc.). Thanks for reading!
+
+<b><em>Update: March 1, 2017</em></b>
+<br><em>The gloom index for "Weird Fishes/ Arpeggi" in an earlier version of this post was calculated with missing lyrics due to a naming discrepancy between the Genius and Spotify APIs. Resolving the issue dropped the track's gloom index from to 40.43 to 25.1 and the "In Rainbows" album average from 53.85 to 52.31. The graph and text have been updated to reflect this change, and the `hchart` code is now compatible with version 0.5.0 of `highcharter`. The code for scraping Genius Lyrics has also been updated to include error handling and better eliminate punctuation and meta-info contained in the lyrics, neither of which significantly affected the gloom index in the previous version.</em>
