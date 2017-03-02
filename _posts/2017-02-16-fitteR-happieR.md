@@ -456,7 +456,7 @@ plot_track_df <- plot_df %>%
     ungroup
 
 album_chart <- hchart(plot_track_df, 'scatter', hcaes(x = as.numeric(as.factor(album_release_year)), y = gloom_index, group = album_name)) %>% 
-    hc_add_series_df(data = avg_line, type = 'line') %>%
+    hc_add_series(data = avg_line, type = 'line') %>%
     hc_tooltip(formatter = JS(paste0("function() {return this.point.tooltip;}")), useHTML = T) %>% 
     hc_colors(c(sample(brewer.pal(n_distinct(track_df$album_name), 'Paired')), 'black')) %>% 
     hc_xAxis(title = list(text = 'Album'), labels = list(enabled = F)) %>% 
