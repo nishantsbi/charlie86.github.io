@@ -469,7 +469,7 @@ album_chart
 ```
 <a href="/htmlwidgets/fitterhappier/album_chart.html" target="_blank"><img src="/img/posts/fitterhappier/fitter_happier_gif.gif"></a>
 
-[View plot in new window](/htmlwidgets/fitterhappier/album_chart.html){:target="_blank"}
+[Click to view plot in new window](/htmlwidgets/fitterhappier/album_chart.html){:target="_blank"}
 
 Of all nine studio albums, Radiohead's latest release, "A Moon Shaped Pool," boasts the lowest average gloom index. This is driven largely by the fact that its finale, "True Love Waits," was the gloomiest song overall. It's also apparent that "A Moon Shaped Pool" broke a trend of increasingly less depressing albums since 2003's "Hail to the Thief" and directly followed the band's least sad album, "The King of Limbs."
 
