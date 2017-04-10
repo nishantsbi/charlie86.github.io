@@ -19,6 +19,7 @@ p a {
 }
 h1,h2,h3,h4,h5,h6 {
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'FixedsysExcelsior301Regular';
   font-weight: 800;
 }
 a {
@@ -229,6 +230,19 @@ img {
   }
 }
 
+@font-face {
+font-family: 'FixedsysExcelsior301Regular';
+src: url('font/fsex300-webfont.eot');
+src: url('font/fsex300-webfont.eot?#iefix') format('embedded-opentype'),
+     url('font/fsex300-webfont.woff') format('woff'),
+     url('font/fsex300-webfont.ttf') format('truetype'),
+     url('font/fsex300-webfont.svg#FixedsysExcelsior301Regular') format('svg');
+font-weight: normal;
+font-style: normal;
+-webkit-font-smoothing:aliased;
+font-smooth:never;
+}
+
 /* --- Footer --- */
 
 footer {
@@ -377,7 +391,8 @@ footer .theme-by {
   font-size: 27px;
   line-height: 1.1;
   display: block;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+  font-family: 'FixedsysExcelsior301Regular';
   font-weight: 300;
   margin: 10px 0 0;
 }
@@ -402,7 +417,8 @@ footer .theme-by {
   padding: 5px 10px;
   font-size: 11px;
   color: #EEE;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+  font-family: 'FixedsysExcelsior301Regular';
   right: 0;
   bottom: 0;
   display: none;
@@ -476,7 +492,8 @@ footer .theme-by {
 /* --- Pager --- */
 
 .pager li a {
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+  font-family: 'FixedsysExcelsior301Regular';
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 800;
