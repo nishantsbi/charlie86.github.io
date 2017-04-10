@@ -34,6 +34,7 @@ pre.highlight > code {
 	white-space: pre;
 	overflow-x: auto;
 	word-wrap: break-word;
+	font-family: 'FixedsysExcelsior301Regular';
 } 
 
 .highlight  { background: #f3f3f3; }
