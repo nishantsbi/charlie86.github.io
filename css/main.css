@@ -18,7 +18,7 @@ p a {
   color: #008AFF;
 }
 h1,h2,h3,h4,h5,h6 {
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   font-family: 'FixedsysExcelsior301Regular';
   font-weight: 800;
 }
@@ -97,7 +97,8 @@ img {
 .navbar-custom {
   background: #F5F5F5;
   border-bottom: 1px solid #EAEAEA;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+  font-family: 'FixedsysExcelsior301Regular';
 }
 
 .navbar-custom .nav li a {
