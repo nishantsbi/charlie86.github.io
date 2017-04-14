@@ -1,10 +1,10 @@
 ---
 layout: post
 title: CoachellaR - A Cluster Analysis
-subtitle: The Three Types of Artists at Coachella 2017
+subtitle: The three types of artists you'll find at the festival
 bigimg: /img/coachella.gif
 ---
-Coachella starts today, and since I'm not lucky enough to be heading to the California desert festival this year, I decided to do the next best thing: use R to scrape the festival website and cluster the attending artists based on the audio features of their top ten Spotify tracks!
+Coachella kicks off today, but since I'm not lucky enough to head off into the California desert this year, I did the next best thing: used R to scrape the lineup from the festival's website and cluster the attending artists based on audio features of their top ten Spotify tracks!
 
 ## Scraping the Coachella Website for Artists
 From the [lineup page](https://www.coachella.com/lineup/){:target="_blank"}, I found the `lineup-listing` element and pulled it down as a character, then extracted just the individual JSON entries with regex into a character vector.
@@ -88,9 +88,9 @@ str(select(coachella_df, -events))
   ..$ end_time_display  : chr "03:30 PM"
 ```
 
-The first thing I noticed was how rich this dataset was. The tech team at Coachella put a ton of information in here, including the channels to watch the livestreams on.
+The first thing that jumped out was how rich the dataset was. The tech team at Coachella put a ton of information in here, including the channels to watch the livestreams on.
 
-Before getting Spotify audio features I had to clean up the artist names a bit, including accounting for dual acts like "Porter Robinson & Madeon." For these instances I separated the two artists and pulled their song data separately, then averaged them together for the final analysis.
+Before getting Spotify audio features I had to clean up the artist names a bit, such as accounting for dual acts like "Porter Robinson & Madeon." In these cases, I separated the two artists and pulled their song data separately. Then I averaged them together for the final analysis.
 
 ``` r
 artists <- select(coachella_df, name, id) %>% mutate(name = str_trim(name))
@@ -354,7 +354,7 @@ Classes ‘tbl_df’, ‘tbl’ and 'data.frame':   189 obs. of  10 variables:
   ..- attr(*, "scaled:scale")= num 72467
 ```
 
-Mesfin Gebeyaw recently did an awesome [post](https://datascienceplus.com/web-scraping-and-applied-clustering-global-happiness-and-social-progress-index/){:target="_blank"} on clustering and PCA with R, using the `NbClust` package to determine the optimal number of clusters. Following his methodology, I found that three clusters would fit my dataset best using Ward's hierarchical clustering method.
+Mesfin Gebeyaw recently did an awesome [post](https://datascienceplus.com/web-scraping-and-applied-clustering-global-happiness-and-social-progress-index/){:target="_blank"} on clustering and PCA with R, using the `NbClust` package to determine the optimal number of clusters. Following his methodology, I found three clusters would fit my dataset best using Ward's hierarchical clustering method.
 
 ```r
 library(NbClust)
