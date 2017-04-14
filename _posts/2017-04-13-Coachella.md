@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CoachellaR - A Cluster Analysis
-subtitle: The Three Types of Arists at Coachella 2017
+subtitle: The Three Types of Artists at Coachella 2017
 bigimg: /img/coachella.gif
 ---
 Coachella starts today, and since I'm not lucky enough to be heading to the California desert festival this year, I decided to do the next best thing: use R to scrape the festival website and cluster the attending artists based on the audio features of their top ten Spotify tracks!
