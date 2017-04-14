@@ -515,4 +515,4 @@ Almost all artists from Cluster 1 fell into the bottom left quadrant, "Hip-hop/R
 
 Cluster 3 artists - "Alternative/Acoustic" - tended to have lower valence and higher acousticness, including Bon Iver, The xx, and Father John Misty. Some of these artists also have a more "live" sound, including "Toots & The Maytals" and "Preservation Hall Jazz Band."
 
-The groupings are far from perfect, but this was an awesome dataset and really fun to pull together. Thanks for reading!
+While the groupings are far from perfect, this was an awesome dataset and really fun to pull together. Thanks for reading!
