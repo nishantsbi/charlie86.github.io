@@ -5,8 +5,8 @@
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
 url: "http://nishant.upadhyay.com"
-# url: "http://charlie86.github.io"
-# baseurl: "rcharlie.com"
+# url: "http://nishant.upadhyay.github.io"
+# baseurl: "nishant.upadhyay.com"
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
@@ -25,7 +25,7 @@ description: Data science blog
 # List of links in the navigation bar
 navbar-links:
   Blog: "http://nishant.upadhyay.com/"
-  Shiny: "http://nishantsbi.com/shiny"
+  #Shiny: "http://nishantsbi.com/shiny"
   About Me / Contact: "http://nishant.upadhyay.com/aboutme/"
   Read More: "http://nishant.upadhyay.com/readmore/"
   # Resources:
@@ -59,7 +59,7 @@ footer-links-active:
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "Nishant.Upadhyay.com"
+#url-pretty: "Nishant.Upadhyay.com"
 
 # --- Misc --- #
 
