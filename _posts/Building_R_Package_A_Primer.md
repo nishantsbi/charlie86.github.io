@@ -81,15 +81,15 @@ Now you're ready to get started on your package. You'll start by opening a new p
 1. Create a new project in R Studio (File - New Project - New Directory - R Package)
   + Give your project a name (I'll call mine `Nishanttestpackage`) and associate it with a directory on your computer. 
   
-![1](1.png)
+![1](/img/posts/packagecreation/1.png)
 
-![2](2.png)
+![2](/img/posts/packagecreation/2.png)
 
-![3](3.png) 
+![3](/img/posts/packagecreation/3.png) 
 
   + Open the project.  
   
-![4](4.png) 
+![4](/img/posts/packagecreation/4.png) 
 
 2. RStudio created a new folder on your computer with the project name. Navigate to the new folder you created and add the following folders if not present(by right click---new folder):  
 
@@ -100,7 +100,7 @@ Now you're ready to get started on your package. You'll start by opening a new p
 
 An R project is simply a directory with specific subfolders and a DESCRIPTION file. Here is how your package folder should look (my package is called `Nishanttestpackage`)
 
-![5](5.png) 
+![5](/img/posts/packagecreation/5.png) 
 
 ## The DESCRIPTION file  
 
@@ -115,7 +115,7 @@ Next youâll update the DESCRIPTION file for your package. Every R package m
 
 Here is a simple DESCRIPTION FILE
 
-![6](6.png) 
+![6](/img/posts/packagecreation/6.png) 
 
 ## Save and document data
 
@@ -135,7 +135,7 @@ save(iris_df, file = "data/iris_df.RData")
 
 After you do this, you should see a new file called `iris_df.RData` in the data folder in your package. 
 
-![7](7.png) 
+![7](/img/posts/packagecreation/7.png) 
 
 Putting many objects into one .RData file: You donât need to restrict yourself to one object for each .RData file. You can store as many objects in an .RData file as youâd like for eg:
 
@@ -152,7 +152,7 @@ For example, to see the help menu for the ChickWeight dataset (a dataset about c
 
 You should create a documentation file for each important data object (usually dataframes) stored in your .RData files.
 
-![8](8.png) 
+![8](/img/posts/packagecreation/8.png) 
 
 
 Here are some notes on creating this documentation file:  
@@ -178,7 +178,7 @@ Create documentation files with document()
  
  devtools::document() # run this code and it creates `mysummary.Rd` file in man folder
  
-![9](9.png) 
+![9](/img/posts/packagecreation/9.png) 
 
 ### Build your package with build()  
 
@@ -186,11 +186,11 @@ Build your pckage in to a single R package file (.tar.gz) file with the
 
 devtools::build() function:
 
-![10](10.png) 
+![10](/img/posts/packagecreation/10.png) 
 
 Once you run this code, you should see a new .tar.gz file in your project. This file contains your final package!
 
-![11](11.png) 
+![11](/img/posts/packagecreation/11.png) 
 
 ## Executing/testing time:Installing the created package
 
@@ -203,7 +203,7 @@ type = "source" # Type of package is source
 
 Assuming that now you are running a diiferent project.Just save the package tar.gz file in the working directory and execute the above functioninstall.packages() as shown below in the image:
 
-![12](12.png) 
+![12](/img/posts/packagecreation/12.png) 
 
 Then load the package as usual:
 
@@ -213,7 +213,7 @@ If you want to see the datasets in the package run the following:
 
 `data(package="Nishanttestpackage")`
 
-![13](13.png) 
+![13](/img/posts/packagecreation/13.png) 
 
 To load the datasets in the package:
 
@@ -224,7 +224,7 @@ To see the function help page/description:
 
 `?mysummary`
 
-![14](14.png) 
+![14](/img/posts/packagecreation/14.png) 
 
 Invoking the function:
 
