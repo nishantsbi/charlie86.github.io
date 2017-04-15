@@ -15,7 +15,7 @@ baseurl: ""
 # Of course don't forget to change the username and projectname to YOUR username and project
 
 # Name of website
-title: My Website
+title: Explorations in R
 
 # Short description of your site
 description: Data science blog
@@ -24,7 +24,7 @@ description: Data science blog
 
 # List of links in the navigation bar
 navbar-links:
-  #Blog: "http://nishant.upadhyay.com/"
+  Blog: "https://nishantsbi.github.io/"
   #Shiny: "http://nishantsbi.com/shiny"
   #About Me / Contact: "http://nishant.upadhyay.com/aboutme/"
   #Read More: "http://nishantsbi.com/readmore/"
