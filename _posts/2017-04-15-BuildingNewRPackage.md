@@ -1,7 +1,10 @@
-# Building_R_Package_A_Primer
-`r Sys.Date()`  
+---
+layout: post
+title: Building R package from scratch:A beginner’s tutorial
+subtitle: Very basics of how to be a R package creator
+---
 
-
+The purpose of this blog is to demonstrate the basics of creating an R package for the purposes of having reusable functions and objects with easy access. In this blog, I will take you through the following few basics steps of creating a package.
 
 ## Developing R package
 
