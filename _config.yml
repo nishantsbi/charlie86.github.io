@@ -4,7 +4,7 @@
 # baseurl is the website's URL without the hostname
 
 # If you are building a simple GitHub user page (http://username.github.io) then use these settings:
-url: "http://rcharlie.com"
+url: "http://nishant.upadhyay.com"
 # url: "http://charlie86.github.io"
 # baseurl: "rcharlie.com"
 
@@ -15,7 +15,7 @@ url: "http://rcharlie.com"
 # Of course don't forget to change the username and projectname to YOUR username and project
 
 # Name of website
-title: RCharlie
+title: Nishant.Upadhyay
 
 # Short description of your site
 description: Data science blog
@@ -24,10 +24,10 @@ description: Data science blog
 
 # List of links in the navigation bar
 navbar-links:
-  Blog: "http://rcharlie.com/"
-  Shiny: "http://rcharlie.com/shiny"
-  About Me / Contact: "http://rcharlie.com/aboutme/"
-  Read More: "http://rcharlie.com/readmore/"
+  Blog: "http://nishant.upadhyay.com/"
+  Shiny: "http://nishantsbi.com/shiny"
+  About Me / Contact: "http://nishant.upadhyay.com/aboutme/"
+  Read More: "http://nishant.upadhyay.com/readmore/"
   # Resources:
   #   - Beautiful Jekyll: "http://deanattali.com/beautiful-jekyll/"
   #   - Shiny Server: "http://52.38.152.177:3838/"
@@ -41,16 +41,16 @@ avatar: "/img/avatar-icon.png"
 # Change all these values or delete the ones you don't want.
 # Important: you must keep the "name" parameter, everything else you can remove
 author:
-  name: Charlie
-  twitter: RCharlie425
-  email: "charles.thompson@barcelonagse.eu"
-  github: charlie86
-  linkedin: "in/charlie-thompson-a2959388/"
+  name: Nishant
+  twitter: nishantsbi
+  email: "nishantup@gmail.com"
+  github: nishantsbi
+  linkedin: "in/nishant-upadhyay-5b541011a/"
   # stackoverflow: 
  
 # Select which links to show in the footer
 footer-links-active:
-  rss: false
+  rss: true
   email: true
   twitter: true
   github: true
@@ -59,24 +59,24 @@ footer-links-active:
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "RCharlie.com"
+url-pretty: "Nishant.Upadhyay.com"
 
 # --- Misc --- #
 
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-disqus: "rCharlie"
+disqus: "nishant.upadhyay"
 
 # add rss
 gems:
   - jekyll-feed
 
 # Fill in your Google Analytics ID to track your website using GA
-google_analytics: "UA-76817892-1"
+#google_analytics: "UA-76817892-1"
 
 # --- Don't need to touch anything below here (but you can if you want) --- #
 
 # Output options (more information on Jekyll's site)
-timezone: "America/New_York"
+timezone: "India/Pune"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
